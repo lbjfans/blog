@@ -1,7 +1,8 @@
 +++
 title = 'Newarticle'
 date = 2024-07-11T15:03:19+08:00
-draft = false
+
+
 +++
 
 # try github
