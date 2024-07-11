@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+  xmlns:xhtml="http://www.w3.org/1999/xhtml">
+  <url>
+    <loc>http://localhost:1313/zh/posts/first/</loc>
+    <lastmod>2024-07-12T01:32:43+08:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/zh/</loc>
+    <lastmod>2024-07-12T01:32:43+08:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/zh/posts/</loc>
+    <lastmod>2024-07-12T01:32:43+08:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/archives/</loc>
+  </url><url>
+    <loc>http://localhost:1313/zh/categories/</loc>
+  </url><url>
+    <loc>http://localhost:1313/zh/series/</loc>
+  </url><url>
+    <loc>http://localhost:1313/zh/tags/</loc>
+  </url>
+</urlset>
