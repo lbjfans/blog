@@ -98,11 +98,17 @@ params:
     author: lbjfans
     # author: ["Me", "You"] # multiple authors
 
-  
+    utteranc:
+      enable: true
+      repo: "blog_comment" # 个人仓库名称
+      issueTerm: "title"
+      theme: "github-light"
+
+
     defaultTheme: auto  # defaultTheme: light or  dark 
     disableThemeToggle: false
     DateFormat: "2006-01-02"
-    ShowShareButtons: true
+    ShowShareButtons: false # 分享链接，暂时关闭
     ShowReadingTime: true
     # disableSpecialistPost: true
     displayFullLangName: true
