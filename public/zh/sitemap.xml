@@ -2,21 +2,18 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
-    <loc>http://localhost:1313/zh/posts/first/</loc>
+    <loc>https://lbjfans.github.io/zh/</loc>
     <lastmod>2024-07-12T01:32:43+08:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/zh/</loc>
+    <loc>https://lbjfans.github.io/zh/posts/</loc>
     <lastmod>2024-07-12T01:32:43+08:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/zh/posts/</loc>
-    <lastmod>2024-07-12T01:32:43+08:00</lastmod>
+    <loc>https://lbjfans.github.io/archives/</loc>
   </url><url>
-    <loc>http://localhost:1313/archives/</loc>
+    <loc>https://lbjfans.github.io/zh/categories/</loc>
   </url><url>
-    <loc>http://localhost:1313/zh/categories/</loc>
+    <loc>https://lbjfans.github.io/zh/series/</loc>
   </url><url>
-    <loc>http://localhost:1313/zh/series/</loc>
-  </url><url>
-    <loc>http://localhost:1313/zh/tags/</loc>
+    <loc>https://lbjfans.github.io/zh/tags/</loc>
   </url>
 </urlset>
