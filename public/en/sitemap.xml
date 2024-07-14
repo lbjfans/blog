@@ -2,32 +2,28 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
-    <loc>http://localhost:1313/en/tags/exam/</loc>
-    <lastmod>2022-05-05T00:18:15+08:00</lastmod>
+    <loc>https://lbjfans.github.io/en/about/</loc>
   </url><url>
-    <loc>http://localhost:1313/en/</loc>
-    <lastmod>2022-05-05T00:18:15+08:00</lastmod>
+    <loc>https://lbjfans.github.io/en/archives/</loc>
   </url><url>
-    <loc>http://localhost:1313/en/tags/</loc>
-    <lastmod>2022-05-05T00:18:15+08:00</lastmod>
+    <loc>https://lbjfans.github.io/en/search/</loc>
   </url><url>
-    <loc>http://localhost:1313/en/posts/exam/os/</loc>
-    <lastmod>2022-05-05T00:18:15+08:00</lastmod>
+    <loc>https://lbjfans.github.io/en/categories/</loc>
   </url><url>
-    <loc>http://localhost:1313/en/posts/</loc>
-    <lastmod>2022-05-05T00:18:15+08:00</lastmod>
+    <loc>https://lbjfans.github.io/en/tags/exam/</loc>
   </url><url>
-    <loc>http://localhost:1313/en/posts/exam/</loc>
-    <lastmod>2022-05-05T00:18:15+08:00</lastmod>
+    <loc>https://lbjfans.github.io/en/tags/lab/</loc>
   </url><url>
-    <loc>http://localhost:1313/en/about/</loc>
+    <loc>https://lbjfans.github.io/en/</loc>
   </url><url>
-    <loc>http://localhost:1313/en/archives/</loc>
+    <loc>https://lbjfans.github.io/en/series/</loc>
   </url><url>
-    <loc>http://localhost:1313/en/search/</loc>
+    <loc>https://lbjfans.github.io/en/tags/</loc>
   </url><url>
-    <loc>http://localhost:1313/en/categories/</loc>
+    <loc>https://lbjfans.github.io/en/posts/exam/os/</loc>
   </url><url>
-    <loc>http://localhost:1313/en/series/</loc>
+    <loc>https://lbjfans.github.io/en/posts/exam/</loc>
+  </url><url>
+    <loc>https://lbjfans.github.io/en/posts/</loc>
   </url>
 </urlset>
