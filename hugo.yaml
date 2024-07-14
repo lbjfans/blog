@@ -1,4 +1,4 @@
-baseURL: https://lbjfans.gitlab.io # 绑定的域名
+baseURL: https://lbjfans.gitlab.io # 绑定的域名 github gitlab gitee
 title: lbjfans
 paginate: 5    # 首页每页显示的文章数
 theme: PaperMod # 主题名称，和themes文件夹下的一致
@@ -59,7 +59,7 @@ languages:
             weight: 1
           - identifier: home
             name: 🏠主页
-            url: https://lbjfans.github.io/blog/
+            url: https://lbjfans.gitlab.io/blog/
             weight: 2
           - identifier: posts
             name: 📚文章
