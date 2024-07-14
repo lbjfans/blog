@@ -104,7 +104,7 @@ params:
       issueTerm: "title"
       theme: "github-light"
     busuanzi: # 访问统计量
-      enable: true
+      enable: false
 
 
     defaultTheme: auto  # defaultTheme: light or  dark 
