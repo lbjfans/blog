@@ -68,11 +68,11 @@ jobs:
   # Deployment job
   deploy:
     environment:
-      name: gitee-pages
+      name: gitlab-pages
       url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
     needs: build
     steps:
-      - name: Deploy to Gitee Pages
+      - name: Deploy to Gitlab Pages
         id: deployment
         uses: actions/deploy-pages@v4
