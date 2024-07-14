@@ -49,7 +49,7 @@ languages:
             - name: 📕项目
               url: posts/lab
             - name: 🏖生活
-              url: posts/life
+              url: posts/other
               
       menu:
         main:
