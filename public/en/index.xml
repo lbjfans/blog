@@ -6,8 +6,15 @@
     <description>Recent content on lbjfans</description>
     <generator>Hugo -- 0.128.2</generator>
     <language>en</language>
-    <lastBuildDate>Sun, 14 Jul 2024 00:18:15 +0800</lastBuildDate>
+    <lastBuildDate>Sun, 14 Jul 2024 01:18:15 +0800</lastBuildDate>
     <atom:link href="http://localhost:1313/en/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>操作系统--概述</title>
+      <link>http://localhost:1313/en/posts/exam/os/</link>
+      <pubDate>Sun, 14 Jul 2024 01:18:15 +0800</pubDate>
+      <guid>http://localhost:1313/en/posts/exam/os/</guid>
+      <description>操作系统概述！！！</description>
+    </item>
     <item>
       <title>xv666</title>
       <link>http://localhost:1313/en/posts/lab/xv6/</link>

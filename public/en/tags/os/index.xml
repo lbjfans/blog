@@ -1,26 +1,19 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
   <channel>
-    <title>Exam on lbjfans</title>
-    <link>http://localhost:1313/en/tags/exam/</link>
-    <description>Recent content in Exam on lbjfans</description>
+    <title>Os on lbjfans</title>
+    <link>http://localhost:1313/en/tags/os/</link>
+    <description>Recent content in Os on lbjfans</description>
     <generator>Hugo -- 0.128.2</generator>
     <language>en</language>
     <lastBuildDate>Sun, 14 Jul 2024 01:18:15 +0800</lastBuildDate>
-    <atom:link href="http://localhost:1313/en/tags/exam/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="http://localhost:1313/en/tags/os/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>操作系统--概述</title>
       <link>http://localhost:1313/en/posts/exam/os/</link>
       <pubDate>Sun, 14 Jul 2024 01:18:15 +0800</pubDate>
       <guid>http://localhost:1313/en/posts/exam/os/</guid>
       <description>操作系统概述！！！</description>
-    </item>
-    <item>
-      <title>考研</title>
-      <link>http://localhost:1313/en/posts/exam/%E8%80%83%E7%A0%94/</link>
-      <pubDate>Sat, 13 Jul 2024 00:18:15 +0800</pubDate>
-      <guid>http://localhost:1313/en/posts/exam/%E8%80%83%E7%A0%94/</guid>
-      <description>考研！！！</description>
     </item>
   </channel>
 </rss>

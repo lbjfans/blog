@@ -39,7 +39,7 @@ languages:
           enabled: true
           title: 考研消遣
           subtitle: "👏🏼欢迎！！！</br>👇联系方式"
-          imageUrl: "img/logo.gif"
+          imageUrl: "img/logo.jpg"
           imageTitle:
           imageWidth: 150
           imageHeight: 150
@@ -48,7 +48,7 @@ languages:
               url: posts/exam
             - name: 📕项目
               url: posts/lab
-            - name: 🏖生活
+            - name: 🏖其他
               url: posts/other
               
       menu:
@@ -135,8 +135,8 @@ params:
         #   url:  "img/twitter.png"
         #- name: bilibili
         # url: "https://space.bilibili.com/"
-        #- name: QQ
-        #  url: "img/qq.jpg"    
+        - name: QQ
+          url: "img/qq.jpg"
         # - name: email
         #  url: "xxx@qq.com"
         - name: RSS
@@ -166,11 +166,11 @@ params:
     #         SiteVerificationTag: "XYZabc"
 
     assets:
-        favicon: "img/logo.gif"
-        favicon16x16: "img/logo.gif"
-        favicon32x32: "img/logo.gif"
-        apple_touch_icon: "logo.gif"
-        safari_pinned_tab: "logo.gif"
+        favicon: "img/logo.jpg"
+        favicon16x16: "img/logo.jpg"
+        favicon32x32: "img/logo.jpg"
+        apple_touch_icon: "logo.jpg"
+        safari_pinned_tab: "logo.jpg"
 
     # cover:
     #     hidden: true # hide everywhere but not in structured data
