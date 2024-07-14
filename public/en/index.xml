@@ -6,7 +6,29 @@
     <description>Recent content on lbjfans</description>
     <generator>Hugo -- 0.128.2</generator>
     <language>en</language>
+    <lastBuildDate>Sun, 14 Jul 2024 00:18:15 +0800</lastBuildDate>
     <atom:link href="http://localhost:1313/en/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>xv666</title>
+      <link>http://localhost:1313/en/posts/lab/xv6/</link>
+      <pubDate>Sun, 14 Jul 2024 00:18:15 +0800</pubDate>
+      <guid>http://localhost:1313/en/posts/lab/xv6/</guid>
+      <description>6s081 测试 again aaa bbb</description>
+    </item>
+    <item>
+      <title>hugo&#43;obsidian&#43;github_page</title>
+      <link>http://localhost:1313/en/posts/other/%E5%85%B6%E4%BB%96/</link>
+      <pubDate>Sat, 13 Jul 2024 00:18:15 +0800</pubDate>
+      <guid>http://localhost:1313/en/posts/other/%E5%85%B6%E4%BB%96/</guid>
+      <description>建站！！！</description>
+    </item>
+    <item>
+      <title>考研</title>
+      <link>http://localhost:1313/en/posts/exam/%E8%80%83%E7%A0%94/</link>
+      <pubDate>Sat, 13 Jul 2024 00:18:15 +0800</pubDate>
+      <guid>http://localhost:1313/en/posts/exam/%E8%80%83%E7%A0%94/</guid>
+      <description>考研！！！</description>
+    </item>
     <item>
       <title></title>
       <link>http://localhost:1313/en/about/</link>

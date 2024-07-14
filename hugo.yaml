@@ -63,7 +63,7 @@ languages:
             weight: 2
           - identifier: posts
             name: 📚文章
-            url: posts
+            url: posts/
             weight: 3
           - identifier: archives
             name: ⏱时间轴

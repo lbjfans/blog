@@ -2,6 +2,42 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
+    <loc>http://localhost:1313/en/tags/lab/</loc>
+    <lastmod>2024-07-14T00:18:15+08:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/en/</loc>
+    <lastmod>2024-07-14T00:18:15+08:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/en/tags/</loc>
+    <lastmod>2024-07-14T00:18:15+08:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/en/posts/lab/xv6/</loc>
+    <lastmod>2024-07-14T00:18:15+08:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/en/posts/</loc>
+    <lastmod>2024-07-14T00:18:15+08:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/en/posts/lab/</loc>
+    <lastmod>2024-07-14T00:18:15+08:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/en/tags/exam/</loc>
+    <lastmod>2024-07-13T00:18:15+08:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/en/posts/other/%E5%85%B6%E4%BB%96/</loc>
+    <lastmod>2024-07-13T00:18:15+08:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/en/tags/other/</loc>
+    <lastmod>2024-07-13T00:18:15+08:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/en/posts/other/</loc>
+    <lastmod>2024-07-13T00:18:15+08:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/en/posts/exam/%E8%80%83%E7%A0%94/</loc>
+    <lastmod>2024-07-13T00:18:15+08:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/en/posts/exam/</loc>
+    <lastmod>2024-07-13T00:18:15+08:00</lastmod>
+  </url><url>
     <loc>http://localhost:1313/en/about/</loc>
   </url><url>
     <loc>http://localhost:1313/en/archives/</loc>
@@ -10,10 +46,6 @@
   </url><url>
     <loc>http://localhost:1313/en/categories/</loc>
   </url><url>
-    <loc>http://localhost:1313/en/</loc>
-  </url><url>
     <loc>http://localhost:1313/en/series/</loc>
-  </url><url>
-    <loc>http://localhost:1313/en/tags/</loc>
   </url>
 </urlset>
