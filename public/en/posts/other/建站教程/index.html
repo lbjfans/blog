@@ -9,7 +9,7 @@
 
 <title>hugo&#43;obsidian&#43;github_page个人博客 | lbjfans</title>
 <meta name="keywords" content="other">
-<meta name="description" content="hugo 安装 我的东西呢？？？??aaa 下载路径：Releases · gohugoio/hugo (github.com) 新建文件夹hugo&ndash;bin，将hugo.exe放于bin中 修改环">
+<meta name="description" content="hugo 安装 下载路径：Releases · gohugoio/hugo (github.com) 新建文件夹hugo&ndash;bin，将hugo.exe放于bin中 修改环境变量：系统属性&ndas">
 <meta name="author" content="lbjfans">
 <link rel="canonical" href="http://localhost:1313/en/posts/other/%E5%BB%BA%E7%AB%99%E6%95%99%E7%A8%8B/">
 <link crossorigin="anonymous" href="/assets/css/stylesheet.af426310e146b199cc19c33acd2cd52502983e6f8cd40d5af80a041bf9ad8ee0.css" integrity="sha256-r0JjEOFGsZnMGcM6zSzVJQKYPm&#43;M1A1a&#43;AoEG/mtjuA=" rel="preload stylesheet" as="style">
@@ -78,7 +78,7 @@
   
 
 <meta property="og:title" content="hugo&#43;obsidian&#43;github_page个人博客" />
-<meta property="og:description" content="hugo 安装 我的东西呢？？？??aaa 下载路径：Releases · gohugoio/hugo (github.com) 新建文件夹hugo&ndash;bin，将hugo.exe放于bin中 修改环" />
+<meta property="og:description" content="hugo 安装 下载路径：Releases · gohugoio/hugo (github.com) 新建文件夹hugo&ndash;bin，将hugo.exe放于bin中 修改环境变量：系统属性&ndas" />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="http://localhost:1313/en/posts/other/%E5%BB%BA%E7%AB%99%E6%95%99%E7%A8%8B/" /><meta property="article:section" content="posts" />
 <meta property="article:published_time" content="2024-07-14T20:40:00+08:00" />
@@ -86,7 +86,7 @@
 
 <meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="hugo&#43;obsidian&#43;github_page个人博客"/>
-<meta name="twitter:description" content="hugo 安装 我的东西呢？？？??aaa 下载路径：Releases · gohugoio/hugo (github.com) 新建文件夹hugo&ndash;bin，将hugo.exe放于bin中 修改环"/>
+<meta name="twitter:description" content="hugo 安装 下载路径：Releases · gohugoio/hugo (github.com) 新建文件夹hugo&ndash;bin，将hugo.exe放于bin中 修改环境变量：系统属性&ndas"/>
 
 
 <script type="application/ld+json">
@@ -121,12 +121,12 @@
   "@type": "BlogPosting",
   "headline": "hugo+obsidian+github_page个人博客",
   "name": "hugo\u002bobsidian\u002bgithub_page个人博客",
-  "description": "hugo 安装 我的东西呢？？？??aaa 下载路径：Releases · gohugoio/hugo (github.com) 新建文件夹hugo\u0026ndash;bin，将hugo.exe放于bin中 修改环",
+  "description": "hugo 安装 下载路径：Releases · gohugoio/hugo (github.com) 新建文件夹hugo\u0026ndash;bin，将hugo.exe放于bin中 修改环境变量：系统属性\u0026ndas",
   "keywords": [
     "other"
   ],
-  "articleBody": "hugo 安装 我的东西呢？？？??aaa\r下载路径：Releases · gohugoio/hugo (github.com) 新建文件夹hugo–bin，将hugo.exe放于bin中 修改环境变量：系统属性–环境变量–系统变量–Path–新增（填入hugo.exe的路径） 检查是否安装成功：cmd输入hugo version后显示版本号 papermod 快速尝试 新建工程：hugo new site blog --format yaml 安装papermod： 1 2 3 git clone https://github.com/adityatelange/hugo-PaperMod themes/PaperMod --depth=1 git init git submodule--helper add https://github.com/adityatelange/hugo-PaperMod.git themes/PaperMod --depth=1 - 如果git clone不了，可以直接下载后解压，手动放到themes文件夹下\r配置文件.yaml中加入theme: [\"PaperMod\"] 随便写点：hugo new post/first.md 删除：content和public中都删除相应的文件夹 启动，本地查看网页：hugo server -D 套用模板 修改hugo.yaml文件：\nblog/hugo.yaml at master · lbjfans/blog (github.com) 其他功能 这部分自定义\n搜索 Features · adityatelange/hugo-PaperMod Wiki (github.com) content/中新建search.md 1 2 3 4 5 6 7 8 --- title: \"🔍 搜索\" # in any language you want layout: \"search\" # is necessary # url: \"/archive\" # description: \"Description for Search\" summary: \"search\" placeholder: \"搜索框内的默认显示\" --- 时间轴 Features · adityatelange/hugo-PaperMod Wiki (github.com) content/中新建archives.md\n1 2 3 4 5 6 --- title: \"⏱ 时间轴\" layout: \"archives\" url: \"/archives/\" summary: archives --- 关于 content/中新建about.md\n1 学习博客！！！ 内容管理 content/中每个文件夹都加入_index.md文件管理相关头部信息，具体细节可上网查找 如：\n1 2 3 4 5 --- title: 其他 share: true dir: posts/other/ --- 评论系统 使用：utterances 参考：Hugo博客添加utterances评论 | 🚀 田少晗的个人博客 (shaohanyun.top) 先安装：GitHub Apps - utterances 后根据自己的仓库复制官方的代码到\\layouts\\partials\\comments.html中：utterances 最后在config.yaml中添加代码 1 2 3 4 5 utteranc: enable: true repo: \"添加你的个人评论仓库名称\" issueTerm: \"title\" theme: \"github-light\" 侧边目录 参考：Hugo侧边目录 | 3rd’s Blog (333rd.net) 部署github 跟随官方教程：Host on GitHub Pages | Hugo (gohugo.io)\n新建一个github repository\nSettings \u003e Pages \u003e Build and deployment \u003e source \u003e 改为github actions\n将hugo文件夹push到github中\n1 2 3 4 5 6 git config --global user.name xx git config --global user.email xx@xx git remote add origin httpxxx # github仓库中https git add . git commit -m \"first\" git push -u origin master hugo根目录下新建.github/workflows/hugo.yaml hugo.yaml中复制官网中的相关内容，记得修改hugo version和master name 等待部署完毕后（github参考Action中查看）即可打开个人博客 obsidian 完成上面的工作后，发文章的工作是：obsidian写文章 \u003e 复制到hugo文件夹下 \u003e git push；为了节省时间，可以使用obsidian插件github publisher(已改名为enveloppe)，在obsidian写完文章后即可一键传送到github page中\n最重要的是将ob的文件夹目录和hugo的目录作对应；ob中新建两个目录，content/（文章），static/images（存放图片） ob中file and links修改图片存放路径，以及关闭wiki（ob和普通md文件图片路径不同） 现在，图片在ob中按照相对路径存储，但是hugo获取图片路径是/images/pic.jpg，所以需要将ob的相对路径如../../images/pic.jpg替换为/images/pic.jpg 接下来在ob的community plugins中下载enveloppe 我的配置如下： 展开查看\r{\r\"github\": {\r\"branch\": \"master\",\r\"automaticallyMergePR\": true,\r\"dryRun\": {\r\"enable\": false,\r\"folderName\": \"enveloppe\"\r},\r\"tokenPath\": \"%configDir%/plugins/%pluginID%/env\",\r\"api\": {\r\"tiersForApi\": \"Github Free/Pro/Team (default)\",\r\"hostname\": \"\"\r},\r\"workflow\": {\r\"commitMessage\": \"[PUBLISHER] Merge\",\r\"name\": \"\"\r},\r\"verifiedRepo\": true\r},\r\"upload\": {\r\"behavior\": \"yaml\",\r\"defaultName\": \"content/posts\",\r\"rootFolder\": \"content\",\r\"yamlFolderKey\": \"dir\",\r\"frontmatterTitle\": {\r\"enable\": false,\r\"key\": \"title\"\r},\r\"replaceTitle\": [],\r\"replacePath\": [],\r\"autoclean\": {\r\"includeAttachments\": true,\r\"enable\": false,\r\"excluded\": []\r},\r\"folderNote\": {\r\"enable\": false,\r\"rename\": \"index.md\",\r\"addTitle\": {\r\"enable\": false,\r\"key\": \"title\"\r}\r},\r\"metadataExtractorPath\": \"\"\r},\r\"conversion\": {\r\"hardbreak\": false,\r\"dataview\": true,\r\"censorText\": [],\r\"tags\": {\r\"inline\": true,\r\"exclude\": [],\r\"fields\": []\r},\r\"links\": {\r\"internal\": false,\r\"unshared\": false,\r\"wiki\": true,\r\"slugify\": \"lower\"\r}\r},\r\"embed\": {\r\"attachments\": true,\r\"overrideAttachments\": [],\r\"keySendFile\": [],\r\"notes\": false,\r\"folder\": \"static/images\",\r\"convertEmbedToLinks\": \"keep\",\r\"charConvert\": \"-\u003e\",\r\"unHandledObsidianExt\": [],\r\"sendSimpleLinks\": true\r},\r\"plugin\": {\r\"shareKey\": \"share\",\r\"excludedFolder\": [],\r\"copyLink\": {\r\"enable\": false,\r\"links\": \"\",\r\"removePart\": [],\r\"transform\": {\r\"toUri\": true,\r\"slugify\": \"lower\",\r\"applyRegex\": []\r}\r},\r\"setFrontmatterKey\": \"Set\"\r},\r\"tabsId\": \"github-configuration\"\r}\r这部分参考：使用 Obsidian 免费建个人博客 | PrintLove\n举例：如果路径和上文一致，那么在ob文件夹content/posts/other中新建文章，文章头部需加入\n1 2 3 4 5 6 --- share: true title: 标题 dir: posts/other/ date: 2024-07-14T20:40:00+08:00 --- 最后可以直接用ctrl + p，输入enveloppe的相关选项即可选择发送文章 google analytics 还可以google analytics后台查看网站访问量\n访问统计量\nAnalytics | Realtime overview (google.com) Hugo網站如何加入Search Console與Google Analytics · Ivon的部落格 (ivonblog.com) 使用Google Analytics监控GitHub Pages访问流量 | Letian’s blog (letianfeng.github.io) 总结 现在的工作流程：obsidian对应目录下写文章 \u003e enveloppe上传 \u003e github page查看效果\n修改样式：git pull \u003e hugo根目录下修改对应文件 \u003e 本地查看效果 \u003e git push\n后续：未知\n参考 参考多位大佬的建站文章\n[置顶] hugo博客搭建 | PaperMod主题 | Sulv’s Blog (sulvblog.cn) PaperMod主题配置 | 🚀 田少晗的个人博客 (shaohanyun.top) 使用 Obsidian 免费建个人博客 | PrintLove https://sspai.com/post/85262 ",
-  "wordCount" : "2005",
+  "articleBody": "hugo 安装 下载路径：Releases · gohugoio/hugo (github.com) 新建文件夹hugo–bin，将hugo.exe放于bin中 修改环境变量：系统属性–环境变量–系统变量–Path–新增（填入hugo.exe的路径） 检查是否安装成功：cmd输入hugo version后显示版本号 papermod 快速尝试 新建工程：hugo new site blog --format yaml 安装papermod： 1 2 3 git clone https://github.com/adityatelange/hugo-PaperMod themes/PaperMod --depth=1 git init git submodule--helper add https://github.com/adityatelange/hugo-PaperMod.git themes/PaperMod --depth=1 - 如果git clone不了，可以直接下载后解压，手动放到themes文件夹下\r配置文件.yaml中加入theme: [\"PaperMod\"] 随便写点：hugo new post/first.md 删除：content和public中都删除相应的文件夹 启动，本地查看网页：hugo server -D 套用模板 修改hugo.yaml文件：\nblog/hugo.yaml at master · lbjfans/blog (github.com) 其他功能 这部分自定义\n搜索 Features · adityatelange/hugo-PaperMod Wiki (github.com) content/中新建search.md 1 2 3 4 5 6 7 8 --- title: \"🔍 搜索\" # in any language you want layout: \"search\" # is necessary # url: \"/archive\" # description: \"Description for Search\" summary: \"search\" placeholder: \"搜索框内的默认显示\" --- 时间轴 Features · adityatelange/hugo-PaperMod Wiki (github.com) content/中新建archives.md\n1 2 3 4 5 6 --- title: \"⏱ 时间轴\" layout: \"archives\" url: \"/archives/\" summary: archives --- 关于 content/中新建about.md\n1 学习博客！！！ 内容管理 content/中每个文件夹都加入_index.md文件管理相关头部信息，具体细节可上网查找 如：\n1 2 3 4 5 --- title: 其他 share: true dir: posts/other/ --- 评论系统 使用：utterances 参考：Hugo博客添加utterances评论 | 🚀 田少晗的个人博客 (shaohanyun.top) 先安装：GitHub Apps - utterances 后根据自己的仓库复制官方的代码到\\layouts\\partials\\comments.html中：utterances 最后在config.yaml中添加代码 1 2 3 4 5 utteranc: enable: true repo: \"添加你的个人评论仓库名称\" issueTerm: \"title\" theme: \"github-light\" 侧边目录 参考：Hugo侧边目录 | 3rd’s Blog (333rd.net) 部署github 跟随官方教程：Host on GitHub Pages | Hugo (gohugo.io)\n新建一个github repository\nSettings \u003e Pages \u003e Build and deployment \u003e source \u003e 改为github actions\n将hugo文件夹push到github中\n1 2 3 4 5 6 git config --global user.name xx git config --global user.email xx@xx git remote add origin httpxxx # github仓库中https git add . git commit -m \"first\" git push -u origin master hugo根目录下新建.github/workflows/hugo.yaml hugo.yaml中复制官网中的相关内容，记得修改hugo version和master name 等待部署完毕后（github参考Action中查看）即可打开个人博客 obsidian 完成上面的工作后，发文章的工作是：obsidian写文章 \u003e 复制到hugo文件夹下 \u003e git push；为了节省时间，可以使用obsidian插件github publisher(已改名为enveloppe)，在obsidian写完文章后即可一键传送到github page中\n最重要的是将ob的文件夹目录和hugo的目录作对应；ob中新建两个目录，content/（文章），static/images（存放图片） 注意缺点：图片只能在github和obsidian中查找，用其他md编辑器打开md文件时，最短路径导致图片无法显示\nob中file and links修改图片存放路径（最短路径，不是相对路径），以及关闭wiki（ob和普通md文件图片路径不同） 现在，图片在ob中按照相对路径存储，但是hugo获取图片路径是/images/pic.jpg，所以需要将ob的最短路径如/pic.jpg替换为/blog/images/pic.jpg；将envelopper–content中的text replacer填入： 1 2 /\\]\\(([^/\\)]+?)\\.(png|jpg|jpeg|webp|gif)/ ](/blog/images/$1.$2 接下来在ob的community plugins中下载enveloppe 我的配置如下： 展开查看\r{\r\"github\": {\r\"branch\": \"master\",\r\"automaticallyMergePR\": true,\r\"dryRun\": {\r\"enable\": false,\r\"folderName\": \"enveloppe\"\r},\r\"tokenPath\": \"%configDir%/plugins/%pluginID%/env\",\r\"api\": {\r\"tiersForApi\": \"Github Free/Pro/Team (default)\",\r\"hostname\": \"\"\r},\r\"workflow\": {\r\"commitMessage\": \"[PUBLISHER] Merge\",\r\"name\": \"\"\r},\r\"verifiedRepo\": true\r},\r\"upload\": {\r\"behavior\": \"yaml\",\r\"defaultName\": \"content/posts\",\r\"rootFolder\": \"content\",\r\"yamlFolderKey\": \"dir\",\r\"frontmatterTitle\": {\r\"enable\": false,\r\"key\": \"title\"\r},\r\"replaceTitle\": [],\r\"replacePath\": [],\r\"autoclean\": {\r\"includeAttachments\": true,\r\"enable\": false,\r\"excluded\": []\r},\r\"folderNote\": {\r\"enable\": false,\r\"rename\": \"index.md\",\r\"addTitle\": {\r\"enable\": false,\r\"key\": \"title\"\r}\r},\r\"metadataExtractorPath\": \"\"\r},\r\"conversion\": {\r\"hardbreak\": false,\r\"dataview\": true,\r\"censorText\": [],\r\"tags\": {\r\"inline\": true,\r\"exclude\": [],\r\"fields\": []\r},\r\"links\": {\r\"internal\": false,\r\"unshared\": false,\r\"wiki\": true,\r\"slugify\": \"lower\"\r}\r},\r\"embed\": {\r\"attachments\": true,\r\"overrideAttachments\": [],\r\"keySendFile\": [],\r\"notes\": false,\r\"folder\": \"static/images\",\r\"convertEmbedToLinks\": \"keep\",\r\"charConvert\": \"-\u003e\",\r\"unHandledObsidianExt\": [],\r\"sendSimpleLinks\": true\r},\r\"plugin\": {\r\"shareKey\": \"share\",\r\"excludedFolder\": [],\r\"copyLink\": {\r\"enable\": false,\r\"links\": \"\",\r\"removePart\": [],\r\"transform\": {\r\"toUri\": true,\r\"slugify\": \"lower\",\r\"applyRegex\": []\r}\r},\r\"setFrontmatterKey\": \"Set\"\r},\r\"tabsId\": \"github-configuration\"\r}\r这部分参考：Github Publisher 插件适配 Hugo 的配置 | PrintLove\n举例：如果路径和上文一致，那么在ob文件夹content/posts/other中新建文章，文章头部需加入\n1 2 3 4 5 6 --- share: true title: 标题 dir: posts/other/ date: 2024-07-14T20:40:00+08:00 --- 最后可以直接用ctrl + p，输入enveloppe的相关选项即可选择发送文章 google analytics 还可以google analytics后台查看网站访问量\n访问统计量\nAnalytics | Realtime overview (google.com) Hugo網站如何加入Search Console與Google Analytics · Ivon的部落格 (ivonblog.com) 使用Google Analytics监控GitHub Pages访问流量 | Letian’s blog (letianfeng.github.io) 总结 现在的工作流程：obsidian对应目录下写文章 \u003e enveloppe上传 \u003e github page查看效果\n修改样式：git pull \u003e hugo根目录下修改对应文件 \u003e 本地查看效果 \u003e git push\n后续：未知\n参考 参考多位大佬的建站文章\n[置顶] hugo博客搭建 | PaperMod主题 | Sulv’s Blog (sulvblog.cn) PaperMod主题配置 | 🚀 田少晗的个人博客 (shaohanyun.top) 使用 Obsidian 免费建个人博客 | PrintLove https://sspai.com/post/85262 ",
+  "wordCount" : "2107",
   "inLanguage": "en",
   "datePublished": "2024-07-14T20:40:00+08:00",
   "dateModified": "2024-07-14T20:40:00+08:00",
@@ -357,29 +357,23 @@
 
   <div class="post-content"><h1 id="hugo">hugo<a hidden class="anchor" aria-hidden="true" href="#hugo">#</a></h1>
 <h2 id="安装">安装<a hidden class="anchor" aria-hidden="true" href="#安装">#</a></h2>
-<ul>
-<li>我的东西呢？？？??aaa<img loading="lazy" src="/images/Pasted%20image%2020240714224009.png" alt=""  />
-</li>
-</ul>
 <ol>
 <li>下载路径：<a href="https://github.com/gohugoio/hugo/releases">Releases · gohugoio/hugo (github.com)</a></li>
 <li>新建文件夹hugo&ndash;bin，将hugo.exe放于bin中
 <ul>
-<li><img loading="lazy" src="/images/Pasted%20image%2020240714224009.png" alt=""  />
-</li>
-<li><img loading="lazy" src="../../../static/images/Pasted%20image%2020240714204842.png" alt=""  />
+<li><img loading="lazy" src="/blog/images/Pasted%20image%2020240714204842.png" alt=""  />
 </li>
 </ul>
 </li>
 <li>修改环境变量：系统属性&ndash;环境变量&ndash;系统变量&ndash;Path&ndash;新增（填入hugo.exe的路径）
 <ul>
-<li><img loading="lazy" src="../../../static/images/Pasted%20image%2020240714204859.png" alt=""  />
+<li><img loading="lazy" src="/blog/images/Pasted%20image%2020240714204859.png" alt=""  />
 </li>
 </ul>
 </li>
 <li>检查是否安装成功：cmd输入<code>hugo version</code>后显示版本号
 <ul>
-<li><img loading="lazy" src="../../../static/images/Pasted%20image%2020240714204911.png" alt=""  />
+<li><img loading="lazy" src="/blog/images/Pasted%20image%2020240714204911.png" alt=""  />
 </li>
 </ul>
 </li>
@@ -573,15 +567,32 @@ content/中新建search.md</li>
 </blockquote>
 <ul>
 <li>最重要的是将ob的文件夹目录和hugo的目录作对应；ob中新建两个目录，content/（文章），static/images（存放图片）</li>
-<li>ob中file and links修改图片存放路径，以及关闭wiki（ob和普通md文件图片路径不同）
+</ul>
+<blockquote>
+<p>注意缺点：图片只能在github和obsidian中查找，用其他md编辑器打开md文件时，最短路径导致图片无法显示</p>
+</blockquote>
 <ul>
-<li><img loading="lazy" src="../../../static/images/Pasted%20image%2020240714211024.png" alt=""  />
+<li>ob中file and links修改图片存放路径（最短路径，不是相对路径），以及关闭wiki（ob和普通md文件图片路径不同）
+<ul>
+<li><img loading="lazy" src="/blog/images/Pasted%20image%2020240714235607.png" alt=""  />
 </li>
-<li><img loading="lazy" src="../../../static/images/Pasted%20image%2020240714210528.png" alt=""  />
+<li><img loading="lazy" src="/blog/images/Pasted%20image%2020240714210528.png" alt=""  />
 </li>
-<li>现在，图片在ob中按照相对路径存储，但是hugo获取图片路径是<code>/images/pic.jpg</code>，所以需要将ob的相对路径如<code>../../images/pic.jpg</code>替换为<code>/images/pic.jpg</code></li>
+<li>现在，图片在ob中按照相对路径存储，但是hugo获取图片路径是<code>/images/pic.jpg</code>，所以需要将ob的最短路径如<code>/pic.jpg</code>替换为<code>/blog/images/pic.jpg</code>；将envelopper&ndash;content中的text replacer填入：</li>
 </ul>
 </li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-text" data-lang="text"><span class="line"><span class="cl">/\]\(([^/\)]+?)\.(png|jpg|jpeg|webp|gif)/
+</span></span><span class="line"><span class="cl">](/blog/images/$1.$2
+</span></span></code></pre></td></tr></table>
+</div>
+</div><ul>
 <li>接下来在ob的community plugins中下载enveloppe</li>
 <li>我的配置如下：</li>
 </ul>
@@ -681,7 +692,7 @@ content/中新建search.md</li>
 </details>
 <ul>
 <li>
-<p>这部分参考：<a href="https://www.printlove.cn/obsidian-blog/">使用 Obsidian 免费建个人博客 | PrintLove</a></p>
+<p>这部分参考：<a href="https://www.printlove.cn/github-publisher-hugo/">Github Publisher 插件适配 Hugo 的配置 | PrintLove</a></p>
 </li>
 <li>
 <p>举例：如果路径和上文一致，那么在ob文件夹content/posts/other中新建文章，文章头部需加入</p>
