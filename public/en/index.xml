@@ -6,8 +6,15 @@
     <description>Recent content on lbjfans</description>
     <generator>Hugo -- 0.128.2</generator>
     <language>en</language>
-    <lastBuildDate>Sun, 14 Jul 2024 01:18:15 +0800</lastBuildDate>
+    <lastBuildDate>Sun, 14 Jul 2024 20:40:00 +0800</lastBuildDate>
     <atom:link href="http://localhost:1313/en/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>hugo&#43;obsidian&#43;github_page个人博客</title>
+      <link>http://localhost:1313/en/posts/other/%E5%BB%BA%E7%AB%99%E6%95%99%E7%A8%8B/</link>
+      <pubDate>Sun, 14 Jul 2024 20:40:00 +0800</pubDate>
+      <guid>http://localhost:1313/en/posts/other/%E5%BB%BA%E7%AB%99%E6%95%99%E7%A8%8B/</guid>
+      <description>hugo 安装 我的东西呢？？？??aaa 下载路径：Releases · gohugoio/hugo (github.com) 新建文件夹hugo&amp;ndash;bin，将hugo.exe放于bin中 修改环</description>
+    </item>
     <item>
       <title>操作系统--概述</title>
       <link>http://localhost:1313/en/posts/exam/os/</link>
@@ -23,11 +30,11 @@
       <description>6s081 测试 again aaa bbb</description>
     </item>
     <item>
-      <title>hugo&#43;obsidian&#43;github_page</title>
+      <title>test</title>
       <link>http://localhost:1313/en/posts/other/%E5%85%B6%E4%BB%96/</link>
       <pubDate>Sat, 13 Jul 2024 00:18:15 +0800</pubDate>
       <guid>http://localhost:1313/en/posts/other/%E5%85%B6%E4%BB%96/</guid>
-      <description>建站！！！</description>
+      <description>个人博客测试！！！</description>
     </item>
     <item>
       <title>考研</title>
