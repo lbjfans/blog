@@ -30,7 +30,7 @@ permalinks:
 defaultContentLanguageInSubdir: true
 
 languages:
-    en:
+    en: 
       params:
         languageName: "English"
         # contentDir: content/english
@@ -136,7 +136,7 @@ params:
         #- name: bilibili
         # url: "https://space.bilibili.com/"
         - name: QQ
-          url: "img/qq.jpg"
+          url: "/img/qq.jpg"
         # - name: email
         #  url: "xxx@qq.com"
         - name: RSS
