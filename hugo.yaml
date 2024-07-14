@@ -16,7 +16,7 @@ buildFuture: false
 buildExpired: false
 enableEmoji: true
 pygmentsUseClasses: true
-# googleAnalytics: UA-123-45
+googleAnalytics: G-0V0J7RS7X4  # 分析blog数据
 
 
 minify:
