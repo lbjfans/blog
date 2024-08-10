@@ -5,7 +5,7 @@ date: 2024-07-16T14:41:00+08:00
 tags:
   - lab
   - Accelerated_Cpp
-dir: posts/lab/accelerated_cpp
+dir: posts/lab/accelerated_cpp/
 summary: Accelerated C++ 第0章
 ---
 # 环境
