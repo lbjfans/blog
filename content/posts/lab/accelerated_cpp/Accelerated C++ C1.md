@@ -5,7 +5,7 @@ date: 2024-08-10T14:41:00+08:00
 tags:
   - lab
   - Accelerated_Cpp
-dir: posts/lab/accelerated_cpp
+dir: posts/lab/accelerated_cpp/
 summary: Accelerated C++ 第1章 字符串的使用
 ---
 
