@@ -10,5 +10,5 @@ summary: Accelerated C++ 第3章 使用批量数据
 ---
 # 3-0
 
-test
+aaa
 modify
