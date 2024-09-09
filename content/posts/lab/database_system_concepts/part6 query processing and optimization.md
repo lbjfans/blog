@@ -89,6 +89,8 @@ aggregation
 
 ## 15.1
 
+
+> 
 > 假设（为了简化这个练习）每个块只能容纳一个元组，并且内存最多只能容纳三个块。请展示在每次排序合并算法的过程中创建的运行（runs），当对以下元组进行排序时，按第一个属性排序：(kangaroo, 17), (wallaby, 21), (emu, 1), (wombat, 13), (platypus, 3), (lion, 8), (warthog, 4), (zebra, 11), (meerkat, 6), (hyena, 9), (hornbill, 2), (baboon, 12).
 > ---
 
