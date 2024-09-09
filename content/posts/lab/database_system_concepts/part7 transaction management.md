@@ -9,6 +9,7 @@ tags:
   - database_system_concepts
 dir: posts/lab/database_system_concepts
 summary: 数据库系统概览--并发和恢复部分，笔记 + 课后题
+draft: true
 ---
 
 # c18 Concurrency Control
