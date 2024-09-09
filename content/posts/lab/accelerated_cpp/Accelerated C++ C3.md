@@ -7,6 +7,7 @@ tags:
   - Accelerated_Cpp
 dir: posts/lab/accelerated_cpp/
 summary: Accelerated C++ 第3章 使用批量数据
+draft: true
 ---
 # 3-0
 

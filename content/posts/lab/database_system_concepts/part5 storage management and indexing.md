@@ -9,6 +9,7 @@ tags:
   - database_system_concepts
 dir: posts/lab/database_system_concepts
 summary: 数据库系统概览--存储和索引部分，笔记 + 课后题
+draft: true
 ---
 # 准备工作
 

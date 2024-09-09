@@ -9,6 +9,7 @@ tags:
   - bustub
 dir: posts/lab/bustub/
 summary: cmu15445 lab1 buffer pool
+draft: true
 ---
 # 复习理论
 

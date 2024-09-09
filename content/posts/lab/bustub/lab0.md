@@ -9,6 +9,7 @@ tags:
   - bustub
 dir: posts/lab/bustub/
 summary: cmu15445 环境配置和lab0
+draft: true
 ---
 
 
