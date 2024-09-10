@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html lang="en" dir="auto">
+
+<head><script src="/blog/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=blog/livereload" data-no-instant defer></script><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+
+
+<title>cmu15445--lab2 b&#43; tree | lbjfans</title>
+<meta name="keywords" content="lab, database, #bustub, bustub">
+<meta name="description" content="cmu15445 lab2 b&#43; tree">
+<meta name="author" content="lbjfans">
+<link rel="canonical" href="http://localhost:1313/blog/en/posts/lab/bustub/lab2-b&#43;tree/">
+<link crossorigin="anonymous" href="/blog/assets/css/stylesheet.af426310e146b199cc19c33acd2cd52502983e6f8cd40d5af80a041bf9ad8ee0.css" integrity="sha256-r0JjEOFGsZnMGcM6zSzVJQKYPm&#43;M1A1a&#43;AoEG/mtjuA=" rel="preload stylesheet" as="style">
+<link rel="icon" href="http://localhost:1313/blog/img/logo.jpg">
+<link rel="icon" type="image/png" sizes="16x16" href="http://localhost:1313/blog/img/logo.jpg">
+<link rel="icon" type="image/png" sizes="32x32" href="http://localhost:1313/blog/img/logo.jpg">
+<link rel="apple-touch-icon" href="http://localhost:1313/blog/logo.jpg">
+<link rel="mask-icon" href="http://localhost:1313/blog/logo.jpg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<link rel="alternate" hreflang="en" href="http://localhost:1313/blog/en/posts/lab/bustub/lab2-b&#43;tree/">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --code-block-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme);
+            }
+        }
+
+    </style>
+</noscript><script type="text/javascript"
+        async
+        src="https://cdn.bootcss.com/mathjax/2.7.3/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+MathJax.Hub.Config({
+  tex2jax: {
+    inlineMath: [['$','$'], ['\\(','\\)']],
+    displayMath: [['$$','$$'], ['\[\[','\]\]']],
+    processEscapes: true,
+    processEnvironments: true,
+    skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+    TeX: { equationNumbers: { autoNumber: "AMS" },
+         extensions: ["AMSmath.js", "AMSsymbols.js"] }
+  }
+});
+
+MathJax.Hub.Queue(function() {
+    
+    
+    
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i = 0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+});
+</script>
+
+<style>
+code.has-jax {
+    font: inherit;
+    font-size: 100%;
+    background: inherit;
+    border: inherit;
+    color: #515151;
+}
+</style>
+
+  
+    
+      <script async src="https://www.googletagmanager.com/gtag/js?id=G-0V0J7RS7X4"></script>
+      <script>
+        var doNotTrack = false;
+        if ( false ) {
+          var dnt = (navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack);
+          var doNotTrack = (dnt == "1" || dnt == "yes");
+        }
+        if (!doNotTrack) {
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', 'G-0V0J7RS7X4');
+        }
+      </script>
+    
+  
+
+<meta property="og:title" content="cmu15445--lab2 b&#43; tree" />
+<meta property="og:description" content="cmu15445 lab2 b&#43; tree" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="http://localhost:1313/blog/en/posts/lab/bustub/lab2-b&#43;tree/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2024-08-15T14:41:00+08:00" />
+<meta property="article:modified_time" content="2024-08-15T14:41:00+08:00" />
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="cmu15445--lab2 b&#43; tree"/>
+<meta name="twitter:description" content="cmu15445 lab2 b&#43; tree"/>
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position":  1 ,
+      "name": "文章",
+      "item": "http://localhost:1313/blog/en/posts/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "项目相关",
+      "item": "http://localhost:1313/blog/en/posts/lab/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  3 ,
+      "name": "cmu 15445--bustub",
+      "item": "http://localhost:1313/blog/en/posts/lab/bustub/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  4 ,
+      "name": "cmu15445--lab2 b+ tree",
+      "item": "http://localhost:1313/blog/en/posts/lab/bustub/lab2-b+tree/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "cmu15445--lab2 b+ tree",
+  "name": "cmu15445--lab2 b\u002b tree",
+  "description": "cmu15445 lab2 b+ tree",
+  "keywords": [
+    "lab", "database", "#bustub", "bustub"
+  ],
+  "articleBody": "复习理论 教材663 hw2-sols.pdf (cmu.edu)\nB+树,B-link树,LSM树…一个视频带你了解常用存储引擎数据结构（合集）_哔哩哔哩_bilibili 数据库底层数据结构 B树B+树LSM树 详解对比与总结-腾讯云开发者社区-腾讯云 (tencent.com)\n出现 存储的数据结构需要两个特性：适合磁盘（顺序IO，减少IO次数），并发 为了减少磁盘随机访问的次数，保证增删改查时间复杂度O(logn)\n数据结构 二叉查找树：对于每个节点，左子树数值小，右子树数值大 平衡二叉树、红黑树：通过旋转避免二叉查找树的左/右斜树情况 B树：允许每个节点有更多的子节点 B+树：数据只在叶子节点 B+树并发：数据库内核月报 (taobao.org)\n悲观锁：分支加写锁 乐观锁：加读锁，需要修改再重新加写锁 对于多核心，一个核心加锁会导致其他核心缓存失效；因此，如果存在一种自底向上加锁的策略，只有在树节点分裂或者合并或者删除的情况下向上加锁，只对被修改的树节点加锁，就可以在很大程度上减少加锁的范围和频率，从而提高B+树的多线程扩展性 Blink树 LSM：适用于多写入场景 面经 B+树比B树好在哪里？哪个层数更多？ 遍历问题：B树全部查找需要中序遍历，而B+遍历叶子节点即可，可以利用空间局部性，即利用磁盘预读原理提前将这些数据读入内存，减少了磁盘 IO 的次数 同样的大小的磁盘页，使用B+树可以容纳更多索引节点元素，在相同的数据量下，Ｂ＋树更加“矮胖”，IO操作更少 Ｂ树的查找只需找到匹配元素即可，最好情况下查找到根节点，最坏情况下查找到叶子结点，所说性能很不稳定，而Ｂ＋树每次必须查找到叶子结点，性能稳定 B+树乐观锁怎么实现？ B树的应用场景有哪些？ (1 条消息) AVL树，红黑树，B树，B+树，Trie树都分别应用在哪些现实场景中？ - 知乎 (zhihu.com) B+树和LSM-Tree的使用场景？LSM-Tree存在的问题有哪些？针对这些问题有什么解决思路？ B+树并发处理有哪些优化思路？Blink树有什么特点？ B-link Tree：一种B+Tree的并发优化 - 知乎 (zhihu.com) 为什么不用哈希表 不适用范围查询 开始lab2 Project #2 - B+Tree | CMU 15-445/645 :: Intro to Database Systems (Spring 2023)\nTask #1 - B+Tree Pages 跟随b_plus_tree_insert_test和b_plus_tree_sequential_scale_test\nsimple insert simple search simple split multiple split 疑问 header_page如何帮助并发？\ncontext有啥用\nvisualize 可以使用tools/b_plus_tree_printer\n1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 $ # To build the tool $ mkdir build $ cd build $ make b_plus_tree_printer -j$(nproc) $ ./bin/b_plus_tree_printer \u003e\u003e ... USAGE ... \u003e\u003e 5 5 // set leaf node and internal node max size to be 5 \u003e\u003e f input.txt // Insert into the tree with some inserts \u003e\u003e g my-tree.dot // output the tree to dot format \u003e\u003e q // Quit the test (Or use another terminal) // 生成图片的2种方式： http://dreampuf.github.io/GraphvizOnline/ dot -Tpng -O my-tree.dot // 和官方实现对比 https://15445.courses.cs.cmu.edu/spring2023/bpt-printer/ Graphviz Online (dreampuf.github.io)\n",
+  "wordCount" : "1096",
+  "inLanguage": "en",
+  "datePublished": "2024-08-15T14:41:00+08:00",
+  "dateModified": "2024-08-15T14:41:00+08:00",
+  "author":{
+    "@type": "Person",
+    "name": "lbjfans"
+  },
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "http://localhost:1313/blog/en/posts/lab/bustub/lab2-b+tree/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "lbjfans",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "http://localhost:1313/blog/img/logo.jpg"
+    }
+  }
+}
+</script>
+</head>
+
+<body class="" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="http://localhost:1313/blog/en/" accesskey="h" title="lbjfans (Alt + H)">lbjfans</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="http://localhost:1313/blog/en/search" title="🔍搜索 (Alt &#43; /)" accesskey=/>
+                    <span>🔍搜索</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://lbjfans.github.io/blog/" title="🏠主页">
+                    <span>🏠主页</span>&nbsp;
+                    <svg fill="none" shape-rendering="geometricPrecision" stroke="currentColor" stroke-linecap="round"
+                        stroke-linejoin="round" stroke-width="2.5" viewBox="0 0 24 24" height="12" width="12">
+                        <path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"></path>
+                        <path d="M15 3h6v6"></path>
+                        <path d="M10 14L21 3"></path>
+                    </svg>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/blog/en/posts/" title="📚文章">
+                    <span>📚文章</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/blog/en/archives/" title="⏱时间轴">
+                    <span>⏱时间轴</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/blog/en/tags" title="🔖标签">
+                    <span>🔖标签</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/blog/en/about" title="🙋🏻‍♂️关于">
+                    <span>🙋🏻‍♂️关于</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    <div class="breadcrumbs"><a href="http://localhost:1313/blog/en/">Home</a>&nbsp;»&nbsp;<a href="http://localhost:1313/blog/en/posts/">文章</a>&nbsp;»&nbsp;<a href="http://localhost:1313/blog/en/posts/lab/">项目相关</a>&nbsp;»&nbsp;<a href="http://localhost:1313/blog/en/posts/lab/bustub/">cmu 15445--bustub</a></div>
+    <h1 class="post-title entry-hint-parent">
+      cmu15445--lab2 b&#43; tree
+      <span class="entry-hint" title="Draft">
+        <svg xmlns="http://www.w3.org/2000/svg" height="35" viewBox="0 -960 960 960" fill="currentColor">
+          <path
+            d="M160-410v-60h300v60H160Zm0-165v-60h470v60H160Zm0-165v-60h470v60H160Zm360 580v-123l221-220q9-9 20-13t22-4q12 0 23 4.5t20 13.5l37 37q9 9 13 20t4 22q0 11-4.5 22.5T862.09-380L643-160H520Zm300-263-37-37 37 37ZM580-220h38l121-122-18-19-19-18-122 121v38Zm141-141-19-18 37 37-18-19Z" />
+        </svg>
+      </span>
+
+    </h1>
+    <div class="post-meta"><span title='2024-08-15 14:41:00 +0800 CST'>2024-08-15</span>&nbsp;·&nbsp;3 min&nbsp;·&nbsp;lbjfans
+
+</div>
+  </header> <aside id="toc-container" class="toc-container wide">
+    <div class="toc">
+        <details  open>
+            <summary accesskey="c" title="(Alt + C)">
+                <span class="details">Table of Contents</span>
+            </summary>
+
+            <div class="inner"><ul>
+                    <li>
+                        <a href="#%e5%a4%8d%e4%b9%a0%e7%90%86%e8%ae%ba" aria-label="复习理论">复习理论</a></li>
+                    <li>
+                        <a href="#%e9%9d%a2%e7%bb%8f" aria-label="面经">面经</a></li>
+                    <li>
+                        <a href="#%e5%bc%80%e5%a7%8blab2" aria-label="开始lab2">开始lab2</a></li>
+                    <li>
+                        <a href="#task-1---btree-pages" aria-label="Task #1 - B&#43;Tree Pages">Task #1 - B+Tree Pages</a></li>
+                    <li>
+                        <a href="#%e7%96%91%e9%97%ae" aria-label="疑问">疑问</a></li>
+                    <li>
+                        <a href="#visualize" aria-label="visualize">visualize</a>
+                    </li>
+                </ul>
+            </div>
+        </details>
+    </div>
+</aside>
+<script>
+    let activeElement;
+    let elements;
+    window.addEventListener('DOMContentLoaded', function (event) {
+        checkTocPosition();
+
+        elements = document.querySelectorAll('h1[id],h2[id],h3[id],h4[id],h5[id],h6[id]');
+         
+         activeElement = elements[0];
+         const id = encodeURI(activeElement.getAttribute('id')).toLowerCase();
+         document.querySelector(`.inner ul li a[href="#${id}"]`).classList.add('active');
+     }, false);
+
+    window.addEventListener('resize', function(event) {
+        checkTocPosition();
+    }, false);
+
+    window.addEventListener('scroll', () => {
+        
+        activeElement = Array.from(elements).find((element) => {
+            if ((getOffsetTop(element) - window.pageYOffset) > 0 && 
+                (getOffsetTop(element) - window.pageYOffset) < window.innerHeight/2) {
+                return element;
+            }
+        }) || activeElement
+
+        elements.forEach(element => {
+             const id = encodeURI(element.getAttribute('id')).toLowerCase();
+             if (element === activeElement){
+                 document.querySelector(`.inner ul li a[href="#${id}"]`).classList.add('active');
+             } else {
+                 document.querySelector(`.inner ul li a[href="#${id}"]`).classList.remove('active');
+             }
+         })
+     }, false);
+
+    const main = parseInt(getComputedStyle(document.body).getPropertyValue('--article-width'), 10);
+    const toc = parseInt(getComputedStyle(document.body).getPropertyValue('--toc-width'), 10);
+    const gap = parseInt(getComputedStyle(document.body).getPropertyValue('--gap'), 10);
+
+    function checkTocPosition() {
+        const width = document.body.scrollWidth;
+
+        if (width - main - (toc * 2) - (gap * 4) > 0) {
+            document.getElementById("toc-container").classList.add("wide");
+        } else {
+            document.getElementById("toc-container").classList.remove("wide");
+        }
+    }
+
+    function getOffsetTop(element) {
+        if (!element.getClientRects().length) {
+            return 0;
+        }
+        let rect = element.getBoundingClientRect();
+        let win = element.ownerDocument.defaultView;
+        return rect.top + win.pageYOffset;   
+    }
+</script>
+
+  <div class="post-content"><h1 id="复习理论">复习理论<a hidden class="anchor" aria-hidden="true" href="#复习理论">#</a></h1>
+<p>教材663
+<a href="https://15445.courses.cs.cmu.edu/spring2023/files/hw2-sols.pdf">hw2-sols.pdf (cmu.edu)</a></p>
+<p><a href="https://www.bilibili.com/video/BV1se4y1U7Dn/?spm_id_from=333.337.search-card.all.click&vd_source=773a63398bea4e166f99c44cae6bee92">B+树,B-link树,LSM树&hellip;一个视频带你了解常用存储引擎数据结构（合集）_哔哩哔哩_bilibili</a>
+<a href="https://cloud.tencent.com/developer/article/1835924">数据库底层数据结构 B树B+树LSM树 详解对比与总结-腾讯云开发者社区-腾讯云 (tencent.com)</a></p>
+<p>出现
+存储的数据结构需要两个特性：适合磁盘（顺序IO，减少IO次数），并发
+为了减少磁盘随机访问的次数，保证增删改查时间复杂度O(logn)</p>
+<p>数据结构
+二叉查找树：对于每个节点，左子树数值小，右子树数值大
+平衡二叉树、红黑树：通过旋转避免二叉查找树的左/右斜树情况
+B树：允许每个节点有更多的子节点
+B+树：数据只在叶子节点
+B+树并发：<a href="http://mysql.taobao.org/monthly/2018/09/01/">数据库内核月报 (taobao.org)</a></p>
+<ul>
+<li>悲观锁：分支加写锁</li>
+<li>乐观锁：加读锁，需要修改再重新加写锁</li>
+<li>对于多核心，一个核心加锁会导致其他核心缓存失效；因此，如果存在一种自底向上加锁的策略，只有在树节点分裂或者合并或者删除的情况下向上加锁，只对被修改的树节点加锁，就可以在很大程度上减少加锁的范围和频率，从而提高B+树的多线程扩展性</li>
+<li>Blink树
+LSM：适用于多写入场景</li>
+</ul>
+<h1 id="面经">面经<a hidden class="anchor" aria-hidden="true" href="#面经">#</a></h1>
+<ul>
+<li>B+树比B树好在哪里？哪个层数更多？
+<ul>
+<li>遍历问题：B树全部查找需要中序遍历，而B+遍历叶子节点即可，可以利用空间局部性，即利用磁盘预读原理提前将这些数据读入内存，减少了磁盘 IO 的次数</li>
+<li>同样的大小的磁盘页，使用B+树可以容纳更多索引节点元素，在相同的数据量下，Ｂ＋树更加“矮胖”，IO操作更少</li>
+<li>Ｂ树的查找只需找到匹配元素即可，最好情况下查找到根节点，最坏情况下查找到叶子结点，所说性能很不稳定，而Ｂ＋树每次必须查找到叶子结点，性能稳定</li>
+</ul>
+</li>
+<li>B+树乐观锁怎么实现？</li>
+<li>B树的应用场景有哪些？
+<ul>
+<li><a href="https://www.zhihu.com/question/30527705">(1 条消息) AVL树，红黑树，B树，B+树，Trie树都分别应用在哪些现实场景中？ - 知乎 (zhihu.com)</a></li>
+</ul>
+</li>
+<li>B+树和LSM-Tree的使用场景？LSM-Tree存在的问题有哪些？针对这些问题有什么解决思路？</li>
+<li>B+树并发处理有哪些优化思路？Blink树有什么特点？
+<ul>
+<li><a href="https://zhuanlan.zhihu.com/p/372830975#:~:text=%E6%9C%80%E7%AE%80%E5%8D%95%E7%9A%84%E6%96%B9%E6%A1%88%E6%98%AF%E5%9C%A8%E6%A0%91%E7%BB%93%E6%9E%84%E8%B0%83%E6%95%B4%E6%97%B6%E4%BD%BF%E7%94%A8%E5%85%A8%E5%B1%80%E9%94%81%E4%BD%8F%E6%95%B4%E6%A3%B5B%2B%20Tree%EF%BC%8C%E9%98%BB%E6%AD%A2%E4%B8%80%E5%88%87%E5%B9%B6%E5%8F%91%E8%AE%BF%E9%97%AE%E7%9B%B4%E5%88%B0%E6%A0%91%E7%BB%93%E6%9E%84%E8%B0%83%E6%95%B4%E5%AE%8C%E6%AF%95%EF%BC%8CInnoDB%E6%97%A9%E6%9C%9F%E4%B9%9F%E6%98%AF%E9%87%87%E5%8F%96%E4%BA%86%E8%AF%A5%E5%81%9A%E6%B3%95%EF%BC%8C%E5%BD%93%E7%84%B6%E8%BF%99%E4%BC%9A%E5%AF%BC%E8%87%B4%E6%80%A7%E8%83%BD%E7%89%B9%E5%88%AB%E5%B7%AE%E3%80%82,%E8%80%8CB-link%20Tree%E5%88%99%E6%8B%92%E7%BB%9D%E5%85%A8%E5%B1%80%E9%94%81%E8%BF%99%E4%B8%80%E5%81%9A%E6%B3%95%E3%80%82%20%E5%AE%83%E6%89%A7%E8%A1%8C%E4%B8%80%E7%A7%8D%E8%87%AA%E5%BA%95%E5%90%91%E4%B8%8A%E7%9A%84%E8%B0%83%E6%95%B4%E6%96%B9%E6%B3%95%EF%BC%8C%E6%AF%8F%E6%AC%A1%E5%8F%AA%E5%AF%B9%E5%BD%93%E5%89%8D%E8%B0%83%E6%95%B4%E8%8A%82%E7%82%B9%E5%8A%A0%E9%94%81%EF%BC%8C%E5%BD%93%E5%AD%90%E8%8A%82%E7%82%B9%E8%B0%83%E6%95%B4%E5%AE%8C%E6%AF%95%E5%90%8E%E5%86%8D%E5%90%91%E4%B8%8A%E5%9B%9E%E6%BA%AF%E8%B0%83%E6%95%B4%E7%88%B6%E8%8A%82%E7%82%B9%EF%BC%8C%E7%9B%B4%E5%88%B0%E6%89%80%E6%9C%89%E8%B0%83%E6%95%B4%E5%AE%8C%E6%AF%95%E3%80%82">B-link Tree：一种B+Tree的并发优化 - 知乎 (zhihu.com)</a></li>
+</ul>
+</li>
+<li>为什么不用哈希表
+<ul>
+<li>不适用范围查询</li>
+</ul>
+</li>
+</ul>
+<h1 id="开始lab2">开始lab2<a hidden class="anchor" aria-hidden="true" href="#开始lab2">#</a></h1>
+<p><a href="https://15445.courses.cs.cmu.edu/spring2023/project2/#b+tree-page">Project #2 - B+Tree | CMU 15-445/645 :: Intro to Database Systems (Spring 2023)</a></p>
+<h1 id="task-1---btree-pages">Task #1 - B+Tree Pages<a hidden class="anchor" aria-hidden="true" href="#task-1---btree-pages">#</a></h1>
+<p>跟随b_plus_tree_insert_test和b_plus_tree_sequential_scale_test</p>
+<ul>
+<li>simple insert</li>
+<li>simple search</li>
+<li>simple split</li>
+<li>multiple split</li>
+</ul>
+<h1 id="疑问">疑问<a hidden class="anchor" aria-hidden="true" href="#疑问">#</a></h1>
+<p>header_page如何帮助并发？</p>
+<p>context有啥用</p>
+<h1 id="visualize">visualize<a hidden class="anchor" aria-hidden="true" href="#visualize">#</a></h1>
+<p>可以使用<code>tools/b_plus_tree_printer</code></p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-gdscript3" data-lang="gdscript3"><span class="line"><span class="cl"><span class="o">$</span> <span class="c1"># To build the tool</span>
+</span></span><span class="line"><span class="cl"><span class="o">$</span> <span class="n">mkdir</span> <span class="n">build</span>
+</span></span><span class="line"><span class="cl"><span class="o">$</span> <span class="n">cd</span> <span class="n">build</span>
+</span></span><span class="line"><span class="cl"><span class="o">$</span> <span class="n">make</span> <span class="n">b_plus_tree_printer</span> <span class="o">-</span><span class="n">j</span><span class="o">$</span><span class="p">(</span><span class="n">nproc</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="o">$</span> <span class="o">./</span><span class="n">bin</span><span class="o">/</span><span class="n">b_plus_tree_printer</span>
+</span></span><span class="line"><span class="cl"><span class="o">&gt;&gt;</span> <span class="o">...</span> <span class="n">USAGE</span> <span class="o">...</span>
+</span></span><span class="line"><span class="cl"><span class="o">&gt;&gt;</span> <span class="mi">5</span> <span class="mi">5</span> <span class="o">//</span> <span class="n">set</span> <span class="n">leaf</span> <span class="n">node</span> <span class="ow">and</span> <span class="n">internal</span> <span class="n">node</span> <span class="nb">max</span> <span class="n">size</span> <span class="n">to</span> <span class="n">be</span> <span class="mi">5</span>
+</span></span><span class="line"><span class="cl"><span class="o">&gt;&gt;</span> <span class="n">f</span> <span class="n">input</span><span class="o">.</span><span class="n">txt</span> <span class="o">//</span> <span class="n">Insert</span> <span class="n">into</span> <span class="n">the</span> <span class="n">tree</span> <span class="n">with</span> <span class="n">some</span> <span class="n">inserts</span> 
+</span></span><span class="line"><span class="cl"><span class="o">&gt;&gt;</span> <span class="n">g</span> <span class="n">my</span><span class="o">-</span><span class="n">tree</span><span class="o">.</span><span class="n">dot</span> <span class="o">//</span> <span class="n">output</span> <span class="n">the</span> <span class="n">tree</span> <span class="n">to</span> <span class="n">dot</span> <span class="n">format</span> 
+</span></span><span class="line"><span class="cl"><span class="o">&gt;&gt;</span> <span class="n">q</span> <span class="o">//</span> <span class="n">Quit</span> <span class="n">the</span> <span class="n">test</span> <span class="p">(</span><span class="n">Or</span> <span class="n">use</span> <span class="n">another</span> <span class="n">terminal</span><span class="p">)</span> 
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="o">//</span> <span class="err">生成图片的</span><span class="mi">2</span><span class="err">种方式：</span>
+</span></span><span class="line"><span class="cl"><span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">dreampuf</span><span class="o">.</span><span class="n">github</span><span class="o">.</span><span class="n">io</span><span class="o">/</span><span class="n">GraphvizOnline</span><span class="o">/</span>
+</span></span><span class="line"><span class="cl"><span class="n">dot</span> <span class="o">-</span><span class="n">Tpng</span> <span class="o">-</span><span class="n">O</span> <span class="n">my</span><span class="o">-</span><span class="n">tree</span><span class="o">.</span><span class="n">dot</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="o">//</span> <span class="err">和官方实现对比</span>
+</span></span><span class="line"><span class="cl"><span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="mf">15445.</span><span class="n">courses</span><span class="o">.</span><span class="n">cs</span><span class="o">.</span><span class="n">cmu</span><span class="o">.</span><span class="n">edu</span><span class="o">/</span><span class="n">spring2023</span><span class="o">/</span><span class="n">bpt</span><span class="o">-</span><span class="n">printer</span><span class="o">/</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p><a href="https://dreampuf.github.io/GraphvizOnline/#digraph%20G%20%7B%0A%0A%20%20subgraph%20cluster_0%20%7B%0A%20%20%20%20style%3Dfilled%3B%0A%20%20%20%20color%3Dlightgrey%3B%0A%20%20%20%20node%20%5Bstyle%3Dfilled%2Ccolor%3Dwhite%5D%3B%0A%20%20%20%20a0%20-%3E%20a1%20-%3E%20a2%20-%3E%20a3%3B%0A%20%20%20%20label%20%3D%20%22process%20%231%22%3B%0A%20%20%7D%0A%0A%20%20subgraph%20cluster_1%20%7B%0A%20%20%20%20node%20%5Bstyle%3Dfilled%5D%3B%0A%20%20%20%20b0%20-%3E%20b1%20-%3E%20b2%20-%3E%20b3%3B%0A%20%20%20%20label%20%3D%20%22process%20%232%22%3B%0A%20%20%20%20color%3Dblue%0A%20%20%7D%0A%20%20start%20-%3E%20a0%3B%0A%20%20start%20-%3E%20b0%3B%0A%20%20a1%20-%3E%20b3%3B%0A%20%20b2%20-%3E%20a3%3B%0A%20%20a3%20-%3E%20a0%3B%0A%20%20a3%20-%3E%20end%3B%0A%20%20b3%20-%3E%20end%3B%0A%0A%20%20start%20%5Bshape%3DMdiamond%5D%3B%0A%20%20end%20%5Bshape%3DMsquare%5D%3B%0A%7D">Graphviz Online (dreampuf.github.io)</a></p>
+
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+      <li><a href="http://localhost:1313/blog/en/tags/lab/">Lab</a></li>
+      <li><a href="http://localhost:1313/blog/en/tags/database/">Database</a></li>
+      <li><a href="http://localhost:1313/blog/en/tags/%23bustub/">#Bustub</a></li>
+      <li><a href="http://localhost:1313/blog/en/tags/bustub/">Bustub</a></li>
+    </ul>
+<nav class="paginav">
+  <a class="prev" href="http://localhost:1313/blog/en/posts/exam/machine_learning/%E6%84%9F%E7%9F%A5%E6%9C%BA/">
+    <span class="title">« Prev</span>
+    <br>
+    <span>机器学习--感知机</span>
+  </a>
+  <a class="next" href="http://localhost:1313/blog/en/posts/lab/bustub/lab1-buffer-pool/">
+    <span class="title">Next »</span>
+    <br>
+    <span>cmu15445--lab1 buffer pool</span>
+  </a>
+</nav>
+
+
+  </footer>
+<div>    
+    <div class="pagination__title">
+        <span class="pagination__title-h" style="font-size: 20px;">评论</span>
+        <br/>
+    </div>
+    <div id="tcomment"></div>
+	<script src="https://utteranc.es/client.js"
+        	repo="lbjfans/blog_comment"
+        	issue-term="url"
+        	theme="github-light"
+        	crossorigin="anonymous"
+        	async>
+	</script>
+</div>
+
+
+  
+  
+
+</article>
+    </main>
+    
+<footer class="footer">
+        <span>&copy; 2024 <a href="http://localhost:1313/blog/en/">lbjfans</a></span> · 
+
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerHTML = 'copy';
+
+        function copyingDone() {
+            copybutton.innerHTML = 'copied!';
+            setTimeout(() => {
+                copybutton.innerHTML = 'copy';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                navigator.clipboard.writeText(codeblock.textContent);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) { };
+            selection.removeRange(range);
+        });
+
+        if (container.classList.contains("highlight")) {
+            container.appendChild(copybutton);
+        } else if (container.parentNode.firstChild == container) {
+            
+        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
+            
+            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+        } else {
+            
+            codeblock.parentNode.appendChild(copybutton);
+        }
+    });
+</script>
+</body>
+
+</html>

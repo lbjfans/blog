@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>Accelerated_Cpp on lbjfans</title>
+    <link>http://localhost:1313/blog/en/tags/accelerated_cpp/</link>
+    <description>Recent content in Accelerated_Cpp on lbjfans</description>
+    <generator>Hugo -- 0.128.2</generator>
+    <language>en</language>
+    <lastBuildDate>Sun, 11 Aug 2024 14:42:00 +0800</lastBuildDate>
+    <atom:link href="http://localhost:1313/blog/en/tags/accelerated_cpp/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Accelerated C&#43;&#43; charpter3</title>
+      <link>http://localhost:1313/blog/en/posts/lab/accelerated_cpp/accelerated-c&#43;&#43;-c3/</link>
+      <pubDate>Sun, 11 Aug 2024 14:42:00 +0800</pubDate>
+      <guid>http://localhost:1313/blog/en/posts/lab/accelerated_cpp/accelerated-c&#43;&#43;-c3/</guid>
+      <description>Accelerated C++ 第3章 使用批量数据</description>
+    </item>
+    <item>
+      <title>Accelerated C&#43;&#43; charpter2</title>
+      <link>http://localhost:1313/blog/en/posts/lab/accelerated_cpp/accelerated-c&#43;&#43;-c2/</link>
+      <pubDate>Sun, 11 Aug 2024 14:41:00 +0800</pubDate>
+      <guid>http://localhost:1313/blog/en/posts/lab/accelerated_cpp/accelerated-c&#43;&#43;-c2/</guid>
+      <description>Accelerated C++ 第2章 循环与计数</description>
+    </item>
+    <item>
+      <title>Accelerated C&#43;&#43; charpter1</title>
+      <link>http://localhost:1313/blog/en/posts/lab/accelerated_cpp/accelerated-c&#43;&#43;-c1/</link>
+      <pubDate>Sat, 10 Aug 2024 14:41:00 +0800</pubDate>
+      <guid>http://localhost:1313/blog/en/posts/lab/accelerated_cpp/accelerated-c&#43;&#43;-c1/</guid>
+      <description>Accelerated C++ 第1章 字符串的使用</description>
+    </item>
+    <item>
+      <title>Accelerated C&#43;&#43; charpter0</title>
+      <link>http://localhost:1313/blog/en/posts/lab/accelerated_cpp/accelerated-c&#43;&#43;-c0/</link>
+      <pubDate>Tue, 16 Jul 2024 14:41:00 +0800</pubDate>
+      <guid>http://localhost:1313/blog/en/posts/lab/accelerated_cpp/accelerated-c&#43;&#43;-c0/</guid>
+      <description>Accelerated C++ 第0章</description>
+    </item>
+  </channel>
+</rss>

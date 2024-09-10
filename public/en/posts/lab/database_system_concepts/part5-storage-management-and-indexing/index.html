@@ -1,0 +1,1216 @@
+<!DOCTYPE html>
+<html lang="en" dir="auto">
+
+<head><script src="/blog/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=blog/livereload" data-no-instant defer></script><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+
+
+<title>database system concepts --  storage | lbjfans</title>
+<meta name="keywords" content="lab, database, #database_system_concepts, database_system_concepts">
+<meta name="description" content="数据库系统概览&ndash;存储和索引部分，笔记 &#43; 课后题">
+<meta name="author" content="lbjfans">
+<link rel="canonical" href="http://localhost:1313/blog/en/posts/lab/database_system_concepts/part5-storage-management-and-indexing/">
+<link crossorigin="anonymous" href="/blog/assets/css/stylesheet.af426310e146b199cc19c33acd2cd52502983e6f8cd40d5af80a041bf9ad8ee0.css" integrity="sha256-r0JjEOFGsZnMGcM6zSzVJQKYPm&#43;M1A1a&#43;AoEG/mtjuA=" rel="preload stylesheet" as="style">
+<link rel="icon" href="http://localhost:1313/blog/img/logo.jpg">
+<link rel="icon" type="image/png" sizes="16x16" href="http://localhost:1313/blog/img/logo.jpg">
+<link rel="icon" type="image/png" sizes="32x32" href="http://localhost:1313/blog/img/logo.jpg">
+<link rel="apple-touch-icon" href="http://localhost:1313/blog/logo.jpg">
+<link rel="mask-icon" href="http://localhost:1313/blog/logo.jpg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<link rel="alternate" hreflang="en" href="http://localhost:1313/blog/en/posts/lab/database_system_concepts/part5-storage-management-and-indexing/">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --code-block-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme);
+            }
+        }
+
+    </style>
+</noscript><script type="text/javascript"
+        async
+        src="https://cdn.bootcss.com/mathjax/2.7.3/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+MathJax.Hub.Config({
+  tex2jax: {
+    inlineMath: [['$','$'], ['\\(','\\)']],
+    displayMath: [['$$','$$'], ['\[\[','\]\]']],
+    processEscapes: true,
+    processEnvironments: true,
+    skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+    TeX: { equationNumbers: { autoNumber: "AMS" },
+         extensions: ["AMSmath.js", "AMSsymbols.js"] }
+  }
+});
+
+MathJax.Hub.Queue(function() {
+    
+    
+    
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i = 0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+});
+</script>
+
+<style>
+code.has-jax {
+    font: inherit;
+    font-size: 100%;
+    background: inherit;
+    border: inherit;
+    color: #515151;
+}
+</style>
+
+  
+    
+      <script async src="https://www.googletagmanager.com/gtag/js?id=G-0V0J7RS7X4"></script>
+      <script>
+        var doNotTrack = false;
+        if ( false ) {
+          var dnt = (navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack);
+          var doNotTrack = (dnt == "1" || dnt == "yes");
+        }
+        if (!doNotTrack) {
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', 'G-0V0J7RS7X4');
+        }
+      </script>
+    
+  
+
+<meta property="og:title" content="database system concepts --  storage" />
+<meta property="og:description" content="数据库系统概览&ndash;存储和索引部分，笔记 &#43; 课后题" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="http://localhost:1313/blog/en/posts/lab/database_system_concepts/part5-storage-management-and-indexing/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2024-07-31T14:41:00+08:00" />
+<meta property="article:modified_time" content="2024-07-31T14:41:00+08:00" />
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="database system concepts --  storage"/>
+<meta name="twitter:description" content="数据库系统概览&ndash;存储和索引部分，笔记 &#43; 课后题"/>
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position":  1 ,
+      "name": "文章",
+      "item": "http://localhost:1313/blog/en/posts/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "项目相关",
+      "item": "http://localhost:1313/blog/en/posts/lab/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  3 ,
+      "name": "the translation and notes for database system concepts 7th",
+      "item": "http://localhost:1313/blog/en/posts/lab/database_system_concepts/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  4 ,
+      "name": "database system concepts --  storage",
+      "item": "http://localhost:1313/blog/en/posts/lab/database_system_concepts/part5-storage-management-and-indexing/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "database system concepts --  storage",
+  "name": "database system concepts --  storage",
+  "description": "数据库系统概览\u0026ndash;存储和索引部分，笔记 + 课后题",
+  "keywords": [
+    "lab", "database", "#database_system_concepts", "database_system_concepts"
+  ],
+  "articleBody": "准备工作 博客\n索引 - Zhroyn 的学习笔记\nDBMS-存储和文件结构 - 丹尼尔奥利瓦 - 博客园 (cnblogs.com)\nChapter13 Query Optimization | Chiichen’s Blog\n答案\nDatabase System Concepts - Practice Exercises (db-book.com)\ndatabase_system_concepts_answers/Ch12_Physical_Storage_Systems/12.1.md at main · noahabe/database_system_concepts_answers (github.com)\nzju-icicles/数据库系统原理/教材/Solutions/Exercises at master · QSCTech/zju-icicles (github.com)\n翻译用GPT\n试用次数查询 (chatgpt.com)\nAIchatOS\n1 翻译这段话成中文，英文一句，中文一句。最后重新返回全部中文翻译。 存储部分\nC12 Physical Storage Systems 本章节概述\n介绍了数据存放的物理介质，如磁盘，SSD，RAID等\n12.1 SSDs可以用作内存和磁盘之间的存储层，将数据库的某些部分（例如一些关系）存储在SSD上，其余部分存储在磁盘上。另一种选择是将SSDs用作磁盘的缓冲区或缓存；频繁使用的块将保留在SSD层，而不常使用的块则保留在磁盘上。 a. 如果需要支持实时查询，并且查询必须在保证的短时间内回答，你会选择哪种方案？请解释原因。 b. 如果你有一个非常大的客户关系，其中只有一些磁盘块被频繁访问，而其他块则很少访问，你会选择哪种方案？\na. 如果需要支持实时查询，并且查询必须在保证的短时间内回答，那么选择将SSD作为存储层更为合适。这是因为将SSD作为存储层可以确保所有数据库数据都存储在SSD上，从而避免了磁盘访问延迟，使得数据检索和查询响应速度更快，能够满足实时查询的性能要求。而如果将SSD作为缓存，则仍然会存在部分数据需要从磁盘读取的情况，这可能导致不可预测的延迟，无法保证实时查询的响应时间。\nb. 对于非常大的客户关系，其中只有部分磁盘块被频繁访问，而其他块则很少访问，选择将SSD作为缓存会更为有效。这是因为在这种情况下，我们无法准确地预知哪些数据块会频繁访问，因此无法仅将一部分关系分配给SSD。此外，由于客户关系非常大，无法将全部数据都存储在SSD上。使用SSD作为缓存，可以动态地将频繁访问的块存储在SSD中，而不常访问的块则保留在磁盘上，这样能够提高整体访问速度，同时降低成本。\n12.2 一些数据库使用磁盘的方式仅使用外圈磁道上的扇区，而将内圈磁道上的扇区留空。这种做法可能的好处是什么？\n磁盘在外圈磁道上的数据传输速率会比内圈磁道更高。这是因为磁盘以恒定的速度旋转，因此当读写头位于外圈磁道时，单位时间内经过读写头的扇区数量更多，而不是内圈磁道。此外，使用仅外圈磁道可以最小化磁盘读写头的移动，从而减少磁盘访问延迟。这一点对于事务处理系统尤为重要，因为延迟会影响事务处理速率。\n2个问题\n数据传输速率 = 数据量 / 访问时间；访问时间 = 磁头移动 + 旋转 + 数据传输 扇区数量：外圈的磁道数量比内圈的多 计算机基础—–不同磁道扇区数是否相同？空硬盘写入数据填充磁道和扇区的顺序是什么？_一个空硬盘,文件写在哪个磁道-CSDN博客 12.3 闪存存储： a. 问：闪存转换表（用于将逻辑页号映射到物理页号）是如何在内存中创建的？ b. 问：假设你有一个64GB的闪存存储系统，页大小为4096字节。如果每个页有一个32位的地址，且表格存储为数组，那么闪存转换表的大小是多少？ c. 问：如果非常频繁地将一系列连续的逻辑页号映射到连续的物理页号，建议如何减少转换表的大小？\na. 用数组存储，索引是逻辑页号，对应物理页号\nb.\nc13 Data Storage Structures 笔记 介绍了数据如何组织存放于物理介质中，以及如何被访问（增删改查）\n文件组织 数据库里的数据以文件的形式写入磁盘中，每个文件分为多个块，块里又包括多个记录（理解为一行）\n下面介绍一条记录中的定长数据，变长数据，以及大文件如何存储\n定长记录：如下图，可以顺序存储多个记录；访问操作和数组类似\n对于删除操作，可以删除一行，然后后面的record向上移动 可以用末尾record代替删除的一行 可以用空闲链表，给record标记为已删除 变长记录：如存储变长字符串 两个问题\n记录的变长属性如何提取 如何存放在磁盘中 解决方式1：bitmap 变长部分用（偏移量，字段长度）表示（数据通过偏移量寻找），定长部分存放数据，然后通过位图表示是否为空（如0001即前三个不为空，最后一个字段为空） 解决方式2：slotted-page structure 头部记录record个数，位置以及record大小；record从尾部开始放；头部和尾部向中间增长 大文件：文件大小超过限制的大小（如MYSQL是半页），如BLOB\nrecord指向溢出页；问题是访问效率低，且备份开销大 存放外部链接；问题是授权，以及链接失效 然后介绍不同记录之间的联系\nheap file Sequential File Organization multitable clustering partitioning heap file 记录可以放在任意空闲的地方；通过free-space map可以知道空闲的空间；优点是插入和删除方便；缺点是查找开销大\nSequential File Organization 适用于按照某个属性排序好的记录，方便查找（如二分查找）；为了加快插入速度，插入时可以先通过指针域插入到overflow block中，而删除可以用逻辑删除，但是这样指针域和物理域顺序会不一致，所以还需要定时重新组织顺序 multitable clustering 常用于两个表之间经常进行连接操作，他们的数据存放于一个块中，就可以减少读取磁盘的时间；缺点是需要会增大读取单个表数据的开销；如例题13.3\npartitioning（分区）\n1 select * from transaction where year=2019 对于上述场景，只查找某一年份，可以将不同年份的数据分开存储，从而降低查找的开销 如2019年之前的数据用的少，可以放在磁盘中，而2019的数据常用，可以放在SSD中 系统目录（Data-Dictionary / system catalog） 每个关系的元数据；如关系的名字，属性（名字，值域，长度），视图，约束，用户，索引，以及存储引擎\n缓冲区 主存 \u003e 缓冲区 \u003e 磁盘 目标是更快的获取常用的数据 缓冲区的替换策略\nLRU MRU 列存储 适用于只使用某个属性的场景\n13.1 考虑从图13.3中的文件中删除记录5。比较以下几种实现删除操作的技术的相对优点： a. 将记录6移动到记录5占据的位置，并将记录7移动到记录6占据的位置。 b. 将记录7移动到记录5占据的位置。 c. 将记录5标记为已删除，而不移动任何记录。\na. 尽管将记录6移动到记录5的位置，并将记录7移动到记录6的位置是最直接的方法，但这种方法需要移动最多的记录，并涉及最多的访问操作。\n删去record 5，然后数组顺序上移 b. 将记录7移动到记录5的位置，移动的记录数量比选项a少，但会破坏文件中的任何排序。\n我觉得题目意思应该是把最后一个record10放到5的位置，然后数组的size– c. 将记录5的空间标记为已删除，这样可以保持排序，并且不移动任何记录，但需要额外的开销来跟踪文件中的所有空闲空间。这种方法可能会导致文件中出现过多的“孔”，如果不定期进行压缩，将影响性能，因为可用的连续空闲记录减少。\n标记record5为已删除 13.2 展示图13.4中的文件在以下每一步操作后的结构： a. 插入记录 (24556, Turnamian, Finance, 98000)。 b. 删除记录 2。 c. 插入记录 (34556, Thompson, Music, 67000)\n这里空闲空间管理使用空闲链表\na. 插入到record1位置\nb. 空闲链表变为：header -\u003e record2 -\u003e record4 -\u003e record6\nc. 插入到record2位置\n13.3 考虑关系 section 和 takes。给出这两个关系的示例实例，其中有三个课程，每个课程都有五个学生。给出这些关系使用多表聚集（multitable clustering）的文件结构。\nsection\ncourse_id course_name 001 english 002 math 003 chinese takes\ncourse_id student_id score 001 100 99 001 101 98 001 102 98 001 103 100 001 104 60 … 003 199 59 multitable clustering\nheader1 header2 header3 001 english 001 100 99 001 101 98 … 001 104 60 … 003 chinese … 003 199 59 13.4 考虑使用位图表示空闲空间图，其中对于文件中的每个块，在位图中维护两个位。如果块的填充率在0到30％之间，位为00；在30到60％之间，位为01；在60到90％之间，位为10；超过90％，位为11。即使对于非常大的文件，这种位图也可以存储在内存中。 a. 概述使用两个位来表示一个块的两个优点和一个缺点，而不是像本章前面描述的那样使用一个字节。 b. 描述如何在记录插入和删除时保持位图的最新状态。 c. 概述在搜索空闲空间和更新空闲空间信息时，位图技术相比空闲链表的优点。\na. 优点：使用两个位来表示空闲空间的空间占用较少，且空闲空间映射需要更新的次数显著减少，因为许多插入/删除操作不会导致空闲空间映射的变化。缺点：这种方法只能提供对可用空闲空间的近似估计，这可能导致空间浪费和/或增加查找记录空闲空间的搜索成本。\nb. 每次插入或删除记录时，需要检查块的使用情况是否已经改变了级别。如果改变，就更新相应的位。否则我们根本不需要访问位图，因此在大多数情况下不会产生额外的开销。\nc. 当为一个大记录或一组记录寻找空闲空间时，可能需要扫描多个空闲链表条目才能找到合适大小的空间，因此开销会更高。而使用位图时，一页位图可以存储多个页面的空闲信息，因此寻找空闲空间所需的I/O操作最小化。同样，当整个块或其大部分被删除时，使用位图技术更新空闲空间信息更加方便。\n13.5 快速确定一个块是否存在于缓冲区中，以及如果存在，它在缓冲区中的位置是非常重要的。考虑到数据库缓冲区的大小非常大，你会使用什么（内存中的）数据结构来完成这个任务？\n哈希表是大型数据库缓冲区中常用的数据结构。 hash_table[block_id] = buffer_id\n这里可以查看bustub源码 13.6 假设你们大学有大量的 takes 记录，这些记录在多年的积累中产生。请解释一下如何对 takes 关系进行表分区，并说明这种技术可能带来的好处。同时，请解释一种潜在的缺点。\n表可以根据 (year, semester) 进行分区。较旧的 takes 记录（不再经常访问的）可以存储在磁盘上，而较新的记录则可以存储在 SSD 上（它们也可以存储在像 Intel Optane 这样的存储级别内存上）。指定年份的查询可以在不读取其他年份记录的情况下得到回答。\n一个缺点是，涉及多个年份的查询会有更高的开销，因为记录可能分布在不同的关系和磁盘块中。\n13.7 给出以下每种情况的关系代数表达式和查询处理策略的示例： a. MRU（最近最常使用）比 LRU（最近最少使用）更合适的情况。 b. LRU（最近最少使用）比 MRU（最近最常使用）更合适的情况。\na. 对于两个表连接，使用nested-loop时，MRU更合适；假设缓冲区只有2个位置，两个表R1和R2，扫描R1的第一个块，然后和R2全部块连接，R2第一个块连接后就没用了，MRU算法（选择最近最常使用的替换）马上将其替换；而LRU会替换R1的第一个块，导致后续的缓冲区换进换出问题\nb. 使用merge join时，LRU更合适\n这里以后了解hash join 和 merge join 13.8 PostgreSQL通常使用一个小的缓冲区，将其余主内存的文件系统缓冲管理工作交给操作系统缓冲管理器来处理。请解释以下内容： (a) 这种方法的好处是什么？ (b) 这种方法的一个关键限制是什么？\na. 数据库系统无法预测其他进程的内存需求。通过使用较小的缓冲区，PostgreSQL确保不会占用过多的主内存。同时，即使一个块从数据库缓冲区中被逐出，只要文件系统缓冲管理器分配了足够的内存，该被逐出的页面很可能仍会被保留在文件系统缓冲区中。因此，数据库缓冲失效通常不会非常昂贵，因为块仍可能在文件系统缓冲区中被缓存。（即一是不影响其他进程，二是可以加速数据库查询）\nb. 这种方法的缺点是数据库系统可能无法控制文件系统缓冲区的替换策略。因此，操作系统可能会做出不理想的决定，导致文件系统缓冲区中的内容被不适当地逐出。\n13.9 在可变长度记录表示中，使用空值位图来指示某个属性是否为空值。 a. 对于可变长度字段，如果值为空，则在偏移量和长度字段中会存储什么？ b. 在某些应用中，元组具有大量属性，其中大多数是空值。你能否修改记录表示，使得空属性的唯一开销仅是空值位图中的一个比特位？\na. 存储什么都可以，最好都设置为0避免出错。\nb. 是的。通过将 null 位图存储在记录的开头，我们就不需要存储数据（值或偏移/长度）。这种表示方法可以节省一些存储空间，但需要额外的工作来提取记录的属性。这种表示方法特别适用于某些记录具有大量字段且大多数字段为空的应用。\n如bitmap | (offset, length) | data，查找某一属性时，若bitmap对应位是0，则找相应的(offset, length)从而找到data 13.10 解释为什么记录分配到块的方式对数据库系统性能有显著影响。\n如果我们将相关的记录分配到同一块中，我们通常可以通过一次磁盘访问来检索大部分或全部所需的记录。磁盘访问往往是数据库的瓶颈，因为这种分配策略减少了执行特定操作所需的磁盘访问次数，从而显著提高了性能。\n13.11 列出以下每种存储关系数据库策略的两个优点和两个缺点： a. 将每个关系存储在一个文件中。 b. 将多个关系（甚至整个数据库）存储在一个文件中。\na.\n优点：由于每个关系存储在自己的文件中，因此可以将经常使用的关系放在SSD上，而将不常使用的关系存储在磁盘驱动器上。假设给定文件的块在硬盘盘片上存储得很接近，从硬盘读取关系到内存会更快，因为块之间距离更近，减少了磁盘臂的移动。 缺点：由于每个关系存储在自己的文件中，因此无法执行诸如多表聚簇(multitable clustering)文件组织之类的优化。每次访问关系时，必须首先通过数据字典/系统目录来获取相应的文件路径。一旦找到路径，打开文件（例如使用 open() 系统调用）会产生开销。 b.\n优点：如果需要，可以执行诸如多表聚簇文件组织等优化。假设整个数据库存储在一个文件中（如 SQLite），我们只需要调用一次 open() 系统调用。关系之间的组织可以由DBMS自己决定，而不是OS决定。 缺点：如果数据库将所有关系存储在一个文件中，数据字典可能会在数据结构中（例如链表）记录每个关系的记录所在的块。然而，这样做会使我们失去从硬盘到主内存的顺序读取的好处。（即：由于文件中记录的位置可能是分散的，系统需要不断地跳转到不同的块进行读取，这样可能会增加磁盘的寻道时间，降低整体读取效率。）由于数据库的所有关系都存储在同一个文件中，因此无法进行优化，比如将某些关系存储在SSD上，而将其他关系存储在磁盘驱动器上（或者这样做很困难）。 13.12 在顺序文件组织中，即使当前只有一个溢出记录，为何还要使用溢出块？ 因为我们预计将来会有更多的插入记录。如果在删除操作后没有足够的空间，新的插入记录将被放置在溢出块中，并且指针将按照顺序指向这些记录。\n13.13 将 Index_metadata 关系规范化，并解释为什么使用规范化版本会导致性能下降。\n原文：figure13-12，index_attributes包括其他属性，所以需要化成第一范式 可以把index_metadata改为 index_metadata(index_name, relation_name, index_type) 而index_attributes成新的表 index_name, other_attributes\n性能下降的原因：不同表可能放在磁盘不同位置，寻找开销大；而且需要连接操作\n13.14 标准的缓冲区管理器假设每个块的大小相同，并且读取成本相同。考虑一种缓冲区管理器，它不是使用 LRU（最近最少使用算法），而是使用对象的引用率，即一个对象在最近几秒钟内被访问的频率。假设我们希望在缓冲区中存储大小和读取成本各不相同的对象（例如网页，读取成本取决于从哪个网站获取）。建议缓冲区管理器如何选择从缓冲区中驱逐哪个块。\n一个好的解决方案是使用优先队列来驱逐页面，其中优先级 (p) 是根据页面的预期重读成本来排序的，该预期重读成本由页面在过去 n 秒内的访问频率 (f)、页面的重读成本 (c) 和页面大小 (s) 决定。公式如下： p=c * s / f 缓冲区管理器应选择驱逐优先级值最低的页面，直到有足够的空闲空间来读取新引用的对象。\nC14 indexing 笔记 介绍索引14.1-5\n问题引入：如词典查单词非常麻烦，如果可以按照字母排序，查单词会简单很多；同样地，索引可以加速找到数据所在的位置\n搜索键：一个或多个属性组成，用来查找record\n索引指标：访问类型，访问、插入、删除时间，空间开销\n两种基本索引\nordered indices hash indices 顺序索引 ordered indices：按照某个属性排序建立的索引\nclustering index：索引顺序和record在文件中的顺序一致；如按单词首字母排好序的字典目录 primary indices：主键上构建的索引，通常也是clustering index secondary(nonclustering) indices：索引顺序和record在文件中顺序不一致；如乱序词典的目录 Dense index：每个键都构建索引 Sparse index：部分键构建索引；如寻找22222，可以先通过索引找到10101，再进行顺序查找；相较于dense index可以减少空间，只要从磁盘取到块于主存中，多的时间开销可以不计 Multilevel Indices：当索引过大，可以构建多层索引减少空间，类似树 顺序索引的更新和删除操作：略\nsecondary index：必须是dense index，因为对于排序好的主键可以通过顺序访问一部分来查找，而非候选码不是按顺序存放的；所以对于相同的键，需要分配桶 B+ tree 基本特点 数据指针在叶子节点中 每个节点指针域至少存满一半 根节点到叶子节点距离相同 每个节点内键都有序 某个键的左边键小，右边大；即$K(l) \u003c= Ki \u003c K(r)$，最左边的节点满足$K(l) \u003c k$，最右边满足$k \u003e= K(r)$ 查询：假设没有重复的键 单个键v：从根节点出发，利用键左边小右边大的原则直到找到叶子节点 范围查询：先找lb，再遍历叶子节点知道键\u003erb\n插入 叶子节点满了，分裂，右节点的第一个键去父节点（保留键在右节点中） 中间节点满了，分类，右节点第一个键去父节点（不保留）\n删除\n叶子下溢出：$key \u003c ⌈(d−1)/2⌉$，d为节点最大的指针数量 中间节点下溢出：$pointer \u003c ⌈d/2⌉$ 向兄弟节点借 合并：如下图，删除Gold，叶子节点下溢出，与兄弟节点合并；中间节点Kim没了，根节点向下补充，随后根节点也下溢出，最后两个中间节点Merge 疑问\n为什么B+常用，为什么不选择排序/哈希索引 怎么分析索引好用，增删改时间复杂度？二级索引？多值索引？ hash index Database.System.Concepts.7th.2019.4.pdf\n试用次数查询 (chatgpt.com)\nhash用途\n内存中创建索引；适用于hash-join等 内存数据库 文件中record的组织方式 in-memory hashing disk-based hashing\n支持等值查找，但不支持范围查找，因为键不是排序的\nbucket：hash_function(key) = bucket_address；一个桶可以对应多个记录的地址，即同一个键对应的多个记录用overflow chaining处理 bucket overflow：当桶数量太少，或者分布不均匀时，会发生桶溢出，即一个桶对应多个记录\nstatic hashing：提前知道记录的个数；为了减少桶溢出的概率，桶的数量通常选择为 (n / f ) × (1 + d)，其中 n表示记录的数量，f 表示每个桶可容纳的记录数量，d 是一个调整因子，通常大约为 0.2。调整因子为 0.2 时，桶中的大约 20% 的空间将保持空闲。\n静态哈希的缺点：当索引数量增加，需要重新调整桶的数量，会影响正常查询 设计hash function目标：键均匀分布于桶中；分布需要均匀（每个桶键范围相同）随机（键均匀分布桶中） dynamic hashing：linear hashing and extendable hashing，章节24.5，P1227 extendable hashing 先跳过 p695\nmultiple-key access creation of indices write-optimized index structures，如LSM tree bitmap indices indexing of spatial and tempral data 14.1 索引加快了查询处理速度，但在每个属性以及所有可能的属性组合上创建索引通常是一个坏主意。请解释原因。\n不在每个属性上都保留索引的原因包括：\n每个索引在插入和删除操作时都会增加额外的CPU时间和磁盘I/O开销。\n非主键的索引在更新时可能需要更改，尽管主键的索引可能不需要更改（这是因为更新通常不会修改主键属性）。\n每个额外的索引都需要额外的存储空间。\n对于涉及多个搜索键的查询，即使只有部分键上有索引，效率也可能不会太差。因此，当已经存在许多索引时，通过添加更多索引对数据库性能的提升较小。\n14.2 一般情况下，是否可以在同一个关系上为不同的搜索键拥有两个聚簇索引？请解释您的答案。\n一般来说，不可能在同一个关系上为不同的键拥有两个聚簇索引，因为聚集索引决定了数据的物理存储顺序，多个聚簇索引需要多次存储。 这会导致磁盘空间的浪费，并且在插入、更新和删除数据时需要维护多个聚集索引，从而降低性能。此外，多个聚集索引还会增加查询优化器的复杂性，使其难以选择最优的查询计划。查询优化器需要评估多个聚集索引的成本和选择合适的索引来执行查询，这将增加查询的执行时间。\n14.3 构造一个 B+-树，键值集合为：$$ (2, 3, 5, 7, 11, 17, 19, 23, 29, 31) $$ 假设树最初为空，值按照升序添加。构造 B+树的情况如下：\nB+ Tree Visualization (usfca.edu)\na. 每个节点可以容纳四个指针 b. 每个节点可以容纳六个指针 c. 每个节点可以容纳八个指针 同理，14.4可以去上述网站检验 14.5 考虑第651页描述的B+-树的修改后的重新分配方案。树的期望高度作为n的函数是什么？ m是nodes个数, n是每个nodes最大的记录数 问题：b+树的高度计算\n理想情况：B^height = K 14.6 编写一个B+树的函数 findRangeIterator() 的伪代码，它与函数 findRange() 类似，但返回的是一个迭代器对象，如 14.3.2 节中所描述的那样。此外，还需要提供迭代器类的伪代码，包括迭代器对象中的变量和 next() 方法。\n14.7 如果索引条目按排序顺序插入到B+树中，每个叶节点的占用率会是多少？请解释原因。 设n为单个节点的最大记录数\n升序插入1-9：如果索引条目按升序插入，新的条目会被定向到最后一个叶节点。当该叶节点被填满时，它会被分裂成两个。分裂生成的两个节点中，左节点不会再被修改，插入操作将发生在右节点。这导致叶节点的占用率约为 50%（[n/2]/n，[]是下取整），除了最后一个叶节点以外。 降序插入9-1：如果插入的键按降序排序，上述情况仍然会发生，但对称地，分裂后的右节点将不再被修改，并且除了第一个叶节点之外，所有节点的占用率为(n-1)/n\n14.8 假设你有一个包含 $n_r$ 个元组的关系r，并在其上构建一个辅助 B+ 树。 a. 给出通过每次插入一条记录来构建 B+ 树索引的成本公式。假设每个块平均可以容纳 f 个条目，并且树中叶节点以上的所有层都在内存中。 b. 假设一次随机磁盘访问需要 10 毫秒，计算在一个包含 1000 万条记录的关系上构建索引的成本。 c. 编写自底向上构建 B+ 树的伪代码，该方法在第 14.4.4 节中概述。你可以假设有一个函数可以有效地对大文件进行排序。\na.\n",
+  "wordCount" : "8647",
+  "inLanguage": "en",
+  "datePublished": "2024-07-31T14:41:00+08:00",
+  "dateModified": "2024-07-31T14:41:00+08:00",
+  "author":{
+    "@type": "Person",
+    "name": "lbjfans"
+  },
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "http://localhost:1313/blog/en/posts/lab/database_system_concepts/part5-storage-management-and-indexing/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "lbjfans",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "http://localhost:1313/blog/img/logo.jpg"
+    }
+  }
+}
+</script>
+</head>
+
+<body class="" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="http://localhost:1313/blog/en/" accesskey="h" title="lbjfans (Alt + H)">lbjfans</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="http://localhost:1313/blog/en/search" title="🔍搜索 (Alt &#43; /)" accesskey=/>
+                    <span>🔍搜索</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://lbjfans.github.io/blog/" title="🏠主页">
+                    <span>🏠主页</span>&nbsp;
+                    <svg fill="none" shape-rendering="geometricPrecision" stroke="currentColor" stroke-linecap="round"
+                        stroke-linejoin="round" stroke-width="2.5" viewBox="0 0 24 24" height="12" width="12">
+                        <path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"></path>
+                        <path d="M15 3h6v6"></path>
+                        <path d="M10 14L21 3"></path>
+                    </svg>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/blog/en/posts/" title="📚文章">
+                    <span>📚文章</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/blog/en/archives/" title="⏱时间轴">
+                    <span>⏱时间轴</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/blog/en/tags" title="🔖标签">
+                    <span>🔖标签</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/blog/en/about" title="🙋🏻‍♂️关于">
+                    <span>🙋🏻‍♂️关于</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    <div class="breadcrumbs"><a href="http://localhost:1313/blog/en/">Home</a>&nbsp;»&nbsp;<a href="http://localhost:1313/blog/en/posts/">文章</a>&nbsp;»&nbsp;<a href="http://localhost:1313/blog/en/posts/lab/">项目相关</a>&nbsp;»&nbsp;<a href="http://localhost:1313/blog/en/posts/lab/database_system_concepts/">the translation and notes for database system concepts 7th</a></div>
+    <h1 class="post-title entry-hint-parent">
+      database system concepts --  storage
+      <span class="entry-hint" title="Draft">
+        <svg xmlns="http://www.w3.org/2000/svg" height="35" viewBox="0 -960 960 960" fill="currentColor">
+          <path
+            d="M160-410v-60h300v60H160Zm0-165v-60h470v60H160Zm0-165v-60h470v60H160Zm360 580v-123l221-220q9-9 20-13t22-4q12 0 23 4.5t20 13.5l37 37q9 9 13 20t4 22q0 11-4.5 22.5T862.09-380L643-160H520Zm300-263-37-37 37 37ZM580-220h38l121-122-18-19-19-18-122 121v38Zm141-141-19-18 37 37-18-19Z" />
+        </svg>
+      </span>
+
+    </h1>
+    <div class="post-meta"><span title='2024-07-31 14:41:00 +0800 CST'>2024-07-31</span>&nbsp;·&nbsp;18 min&nbsp;·&nbsp;lbjfans
+
+</div>
+  </header> <aside id="toc-container" class="toc-container wide">
+    <div class="toc">
+        <details  open>
+            <summary accesskey="c" title="(Alt + C)">
+                <span class="details">Table of Contents</span>
+            </summary>
+
+            <div class="inner"><ul>
+                    <li>
+                        <a href="#%e5%87%86%e5%a4%87%e5%b7%a5%e4%bd%9c" aria-label="准备工作">准备工作</a></li>
+                    <li>
+                        <a href="#c12-physical-storage-systems" aria-label="C12 Physical Storage Systems">C12 Physical Storage Systems</a><ul>
+                            
+                    <li>
+                        <a href="#121" aria-label="12.1">12.1</a></li>
+                    <li>
+                        <a href="#122" aria-label="12.2">12.2</a></li>
+                    <li>
+                        <a href="#123" aria-label="12.3">12.3</a></li></ul>
+                    </li>
+                    <li>
+                        <a href="#c13-data-storage-structures" aria-label="c13 Data Storage Structures">c13 Data Storage Structures</a><ul>
+                            
+                    <li>
+                        <a href="#%e7%ac%94%e8%ae%b0" aria-label="笔记">笔记</a></li>
+                    <li>
+                        <a href="#131" aria-label="13.1">13.1</a></li>
+                    <li>
+                        <a href="#132" aria-label="13.2">13.2</a></li>
+                    <li>
+                        <a href="#133" aria-label="13.3">13.3</a></li>
+                    <li>
+                        <a href="#134" aria-label="13.4">13.4</a></li>
+                    <li>
+                        <a href="#135" aria-label="13.5">13.5</a></li>
+                    <li>
+                        <a href="#136" aria-label="13.6">13.6</a></li>
+                    <li>
+                        <a href="#137" aria-label="13.7">13.7</a></li>
+                    <li>
+                        <a href="#138" aria-label="13.8">13.8</a></li>
+                    <li>
+                        <a href="#139" aria-label="13.9">13.9</a></li>
+                    <li>
+                        <a href="#1310" aria-label="13.10">13.10</a></li>
+                    <li>
+                        <a href="#1311" aria-label="13.11">13.11</a></li>
+                    <li>
+                        <a href="#1312" aria-label="13.12">13.12</a></li>
+                    <li>
+                        <a href="#%e5%9c%a8%e9%a1%ba%e5%ba%8f%e6%96%87%e4%bb%b6%e7%bb%84%e7%bb%87%e4%b8%ad%e5%8d%b3%e4%bd%bf%e5%bd%93%e5%89%8d%e5%8f%aa%e6%9c%89%e4%b8%80%e4%b8%aa%e6%ba%a2%e5%87%ba%e8%ae%b0%e5%bd%95%e4%b8%ba%e4%bd%95%e8%bf%98%e8%a6%81%e4%bd%bf%e7%94%a8%e6%ba%a2%e5%87%ba%e5%9d%97" aria-label="在顺序文件组织中，即使当前只有一个溢出记录，为何还要使用溢出块？">在顺序文件组织中，即使当前只有一个溢出记录，为何还要使用溢出块？</a></li>
+                    <li>
+                        <a href="#1313" aria-label="13.13">13.13</a></li>
+                    <li>
+                        <a href="#1314" aria-label="13.14">13.14</a></li></ul>
+                    </li>
+                    <li>
+                        <a href="#c14-indexing" aria-label="C14 indexing">C14 indexing</a><ul>
+                            
+                    <li>
+                        <a href="#%e7%ac%94%e8%ae%b0-1" aria-label="笔记">笔记</a><ul>
+                            
+                    <li>
+                        <a href="#%e9%a1%ba%e5%ba%8f%e7%b4%a2%e5%bc%95" aria-label="顺序索引">顺序索引</a></li>
+                    <li>
+                        <a href="#b-tree" aria-label="B&#43; tree">B+ tree</a></li>
+                    <li>
+                        <a href="#hash-index" aria-label="hash index">hash index</a></li>
+                    <li>
+                        <a href="#%e5%85%88%e8%b7%b3%e8%bf%87" aria-label="先跳过">先跳过</a></li></ul>
+                    </li>
+                    <li>
+                        <a href="#141" aria-label="14.1">14.1</a></li>
+                    <li>
+                        <a href="#142" aria-label="14.2">14.2</a></li>
+                    <li>
+                        <a href="#143" aria-label="14.3">14.3</a></li>
+                    <li>
+                        <a href="#145" aria-label="14.5">14.5</a></li>
+                    <li>
+                        <a href="#%e8%80%83%e8%99%91%e7%ac%ac651%e9%a1%b5%e6%8f%8f%e8%bf%b0%e7%9a%84b-%e6%a0%91%e7%9a%84%e4%bf%ae%e6%94%b9%e5%90%8e%e7%9a%84%e9%87%8d%e6%96%b0%e5%88%86%e9%85%8d%e6%96%b9%e6%a1%88%e6%a0%91%e7%9a%84%e6%9c%9f%e6%9c%9b%e9%ab%98%e5%ba%a6%e4%bd%9c%e4%b8%ban%e7%9a%84%e5%87%bd%e6%95%b0%e6%98%af%e4%bb%80%e4%b9%88" aria-label="考虑第651页描述的B&#43;-树的修改后的重新分配方案。树的期望高度作为n的函数是什么？">考虑第651页描述的B+-树的修改后的重新分配方案。树的期望高度作为n的函数是什么？</a></li>
+                    <li>
+                        <a href="#146" aria-label="14.6">14.6</a></li>
+                    <li>
+                        <a href="#147" aria-label="14.7">14.7</a></li>
+                    <li>
+                        <a href="#%e5%a6%82%e6%9e%9c%e7%b4%a2%e5%bc%95%e6%9d%a1%e7%9b%ae%e6%8c%89%e6%8e%92%e5%ba%8f%e9%a1%ba%e5%ba%8f%e6%8f%92%e5%85%a5%e5%88%b0b%e6%a0%91%e4%b8%ad%e6%af%8f%e4%b8%aa%e5%8f%b6%e8%8a%82%e7%82%b9%e7%9a%84%e5%8d%a0%e7%94%a8%e7%8e%87%e4%bc%9a%e6%98%af%e5%a4%9a%e5%b0%91%e8%af%b7%e8%a7%a3%e9%87%8a%e5%8e%9f%e5%9b%a0" aria-label="如果索引条目按排序顺序插入到B&#43;树中，每个叶节点的占用率会是多少？请解释原因。">如果索引条目按排序顺序插入到B+树中，每个叶节点的占用率会是多少？请解释原因。</a></li>
+                    <li>
+                        <a href="#148" aria-label="14.8">14.8</a>
+                    </li>
+                </ul>
+                </li>
+                </ul>
+            </div>
+        </details>
+    </div>
+</aside>
+<script>
+    let activeElement;
+    let elements;
+    window.addEventListener('DOMContentLoaded', function (event) {
+        checkTocPosition();
+
+        elements = document.querySelectorAll('h1[id],h2[id],h3[id],h4[id],h5[id],h6[id]');
+         
+         activeElement = elements[0];
+         const id = encodeURI(activeElement.getAttribute('id')).toLowerCase();
+         document.querySelector(`.inner ul li a[href="#${id}"]`).classList.add('active');
+     }, false);
+
+    window.addEventListener('resize', function(event) {
+        checkTocPosition();
+    }, false);
+
+    window.addEventListener('scroll', () => {
+        
+        activeElement = Array.from(elements).find((element) => {
+            if ((getOffsetTop(element) - window.pageYOffset) > 0 && 
+                (getOffsetTop(element) - window.pageYOffset) < window.innerHeight/2) {
+                return element;
+            }
+        }) || activeElement
+
+        elements.forEach(element => {
+             const id = encodeURI(element.getAttribute('id')).toLowerCase();
+             if (element === activeElement){
+                 document.querySelector(`.inner ul li a[href="#${id}"]`).classList.add('active');
+             } else {
+                 document.querySelector(`.inner ul li a[href="#${id}"]`).classList.remove('active');
+             }
+         })
+     }, false);
+
+    const main = parseInt(getComputedStyle(document.body).getPropertyValue('--article-width'), 10);
+    const toc = parseInt(getComputedStyle(document.body).getPropertyValue('--toc-width'), 10);
+    const gap = parseInt(getComputedStyle(document.body).getPropertyValue('--gap'), 10);
+
+    function checkTocPosition() {
+        const width = document.body.scrollWidth;
+
+        if (width - main - (toc * 2) - (gap * 4) > 0) {
+            document.getElementById("toc-container").classList.add("wide");
+        } else {
+            document.getElementById("toc-container").classList.remove("wide");
+        }
+    }
+
+    function getOffsetTop(element) {
+        if (!element.getClientRects().length) {
+            return 0;
+        }
+        let rect = element.getBoundingClientRect();
+        let win = element.ownerDocument.defaultView;
+        return rect.top + win.pageYOffset;   
+    }
+</script>
+
+  <div class="post-content"><h1 id="准备工作">准备工作<a hidden class="anchor" aria-hidden="true" href="#准备工作">#</a></h1>
+<blockquote>
+<p>博客</p>
+</blockquote>
+<p><a href="https://zhroyn.github.io/MyNotes/%E8%AF%BE%E7%A8%8B/%E6%95%B0%E6%8D%AE%E5%BA%93%E7%B3%BB%E7%BB%9F/Chapter14%20Indexing.html">索引 - Zhroyn 的学习笔记</a></p>
+<p><a href="https://www.cnblogs.com/RDaneelOlivaw/p/8404407.html">DBMS-存储和文件结构 - 丹尼尔奥利瓦 - 博客园 (cnblogs.com)</a></p>
+<p><a href="https://chiichen.github.io/posts/%E8%AF%BE%E7%A8%8B%E7%AC%94%E8%AE%B0/%E6%95%B0%E6%8D%AE%E5%BA%93/Chapter13%20Query%20Optimization.html">Chapter13 Query Optimization | Chiichen&rsquo;s Blog</a></p>
+<blockquote>
+<p>答案</p>
+</blockquote>
+<p><a href="https://db-book.com/Practice-Exercises/index-solu.html">Database System Concepts - Practice Exercises (db-book.com)</a></p>
+<p><a href="https://github.com/noahabe/database_system_concepts_answers/blob/main/Ch12_Physical_Storage_Systems/12.1.md">database_system_concepts_answers/Ch12_Physical_Storage_Systems/12.1.md at main · noahabe/database_system_concepts_answers (github.com)</a></p>
+<p><a href="https://github.com/QSCTech/zju-icicles/tree/master/%E6%95%B0%E6%8D%AE%E5%BA%93%E7%B3%BB%E7%BB%9F%E5%8E%9F%E7%90%86/%E6%95%99%E6%9D%90/Solutions/Exercises">zju-icicles/数据库系统原理/教材/Solutions/Exercises at master · QSCTech/zju-icicles (github.com)</a></p>
+<blockquote>
+<p>翻译用GPT</p>
+</blockquote>
+<p><a href="https://chatgpt.com/">试用次数查询 (chatgpt.com)</a></p>
+<p><a href="https://chat18.aichatos.xyz/">AIchatOS</a></p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">翻译这段话成中文，英文一句，中文一句。最后重新返回全部中文翻译。
+</span></span></code></pre></td></tr></table>
+</div>
+</div><blockquote>
+<p>存储部分</p>
+</blockquote>
+<p><img loading="lazy" src="/blog/images/Pasted%20image%2020240729192231.png" alt="|500x300"  />
+</p>
+<h1 id="c12-physical-storage-systems">C12 Physical Storage Systems<a hidden class="anchor" aria-hidden="true" href="#c12-physical-storage-systems">#</a></h1>
+<blockquote>
+<p>本章节概述</p>
+</blockquote>
+<p>介绍了数据存放的物理介质，如磁盘，SSD，RAID等</p>
+<h2 id="121">12.1<a hidden class="anchor" aria-hidden="true" href="#121">#</a></h2>
+<blockquote>
+<p>SSDs可以用作内存和磁盘之间的存储层，将数据库的某些部分（例如一些关系）存储在SSD上，其余部分存储在磁盘上。另一种选择是将SSDs用作磁盘的缓冲区或缓存；频繁使用的块将保留在SSD层，而不常使用的块则保留在磁盘上。
+a. 如果需要支持实时查询，并且查询必须在保证的短时间内回答，你会选择哪种方案？请解释原因。
+b. 如果你有一个非常大的客户关系，其中只有一些磁盘块被频繁访问，而其他块则很少访问，你会选择哪种方案？</p>
+</blockquote>
+<hr>
+<p><strong>a.</strong> 如果需要支持实时查询，并且查询必须在保证的短时间内回答，那么选择将SSD作为存储层更为合适。这是因为将SSD作为存储层可以确保所有数据库数据都存储在SSD上，从而避免了磁盘访问延迟，使得数据检索和查询响应速度更快，能够满足实时查询的性能要求。而如果将SSD作为缓存，则仍然会存在部分数据需要从磁盘读取的情况，这可能导致不可预测的延迟，无法保证实时查询的响应时间。</p>
+<p><strong>b.</strong> 对于非常大的客户关系，其中只有部分磁盘块被频繁访问，而其他块则很少访问，选择将SSD作为缓存会更为有效。这是因为在这种情况下，我们无法准确地预知哪些数据块会频繁访问，因此无法仅将一部分关系分配给SSD。此外，由于客户关系非常大，无法将全部数据都存储在SSD上。使用SSD作为缓存，可以动态地将频繁访问的块存储在SSD中，而不常访问的块则保留在磁盘上，这样能够提高整体访问速度，同时降低成本。</p>
+<h2 id="122">12.2<a hidden class="anchor" aria-hidden="true" href="#122">#</a></h2>
+<blockquote>
+<p>一些数据库使用磁盘的方式仅使用外圈磁道上的扇区，而将内圈磁道上的扇区留空。这种做法可能的好处是什么？</p>
+</blockquote>
+<hr>
+<p>磁盘在外圈磁道上的数据传输速率会比内圈磁道更高。这是因为磁盘以恒定的速度旋转，因此当读写头位于外圈磁道时，单位时间内经过读写头的扇区数量更多，而不是内圈磁道。此外，使用仅外圈磁道可以最小化磁盘读写头的移动，从而减少磁盘访问延迟。这一点对于事务处理系统尤为重要，因为延迟会影响事务处理速率。</p>
+<p>2个问题</p>
+<ul>
+<li>数据传输速率 = 数据量 / 访问时间；访问时间 = 磁头移动 + 旋转 + 数据传输</li>
+<li>扇区数量：外圈的磁道数量比内圈的多
+<ul>
+<li><a href="https://blog.csdn.net/m0_37482190/article/details/86540396">计算机基础&mdash;&ndash;不同磁道扇区数是否相同？空硬盘写入数据填充磁道和扇区的顺序是什么？_一个空硬盘,文件写在哪个磁道-CSDN博客</a></li>
+</ul>
+</li>
+</ul>
+<h2 id="123">12.3<a hidden class="anchor" aria-hidden="true" href="#123">#</a></h2>
+<blockquote>
+<p>闪存存储：
+a. 问：闪存转换表（用于将逻辑页号映射到物理页号）是如何在内存中创建的？
+b. 问：假设你有一个64GB的闪存存储系统，页大小为4096字节。如果每个页有一个32位的地址，且表格存储为数组，那么闪存转换表的大小是多少？
+c. 问：如果非常频繁地将一系列连续的逻辑页号映射到连续的物理页号，建议如何减少转换表的大小？</p>
+</blockquote>
+<hr>
+<p>a. 用数组存储，索引是逻辑页号，对应物理页号</p>
+<p>b.</p>
+<h1 id="c13-data-storage-structures">c13 Data Storage Structures<a hidden class="anchor" aria-hidden="true" href="#c13-data-storage-structures">#</a></h1>
+<h2 id="笔记">笔记<a hidden class="anchor" aria-hidden="true" href="#笔记">#</a></h2>
+<blockquote>
+<p>介绍了数据如何组织存放于物理介质中，以及如何被访问（增删改查）</p>
+</blockquote>
+<p>文件组织
+数据库里的数据以文件的形式写入磁盘中，每个文件分为多个块，块里又包括多个记录（理解为一行）</p>
+<blockquote>
+<p>下面介绍一条记录中的定长数据，变长数据，以及大文件如何存储</p>
+</blockquote>
+<p>定长记录：如下图，可以顺序存储多个记录；访问操作和数组类似</p>
+<ul>
+<li>对于删除操作，可以删除一行，然后后面的record向上移动</li>
+<li>可以用末尾record代替删除的一行</li>
+<li>可以用空闲链表，给record标记为已删除
+<img loading="lazy" src="/blog/images/Pasted%20image%2020240802142805.png" alt=""  />
+</li>
+</ul>
+<p>变长记录：如存储变长字符串
+两个问题</p>
+<ul>
+<li>记录的变长属性如何提取</li>
+<li>如何存放在磁盘中
+解决方式1：bitmap
+变长部分用（偏移量，字段长度）表示（数据通过偏移量寻找），定长部分存放数据，然后通过位图表示是否为空（如0001即前三个不为空，最后一个字段为空）
+<img loading="lazy" src="/blog/images/Pasted%20image%2020240802144217.png" alt=""  />
+
+解决方式2：slotted-page structure
+头部记录record个数，位置以及record大小；record从尾部开始放；头部和尾部向中间增长
+<img loading="lazy" src="/blog/images/Pasted%20image%2020240802171628.png" alt=""  />
+</li>
+</ul>
+<p>大文件：文件大小超过限制的大小（如MYSQL是半页），如BLOB</p>
+<ul>
+<li>record指向溢出页；问题是访问效率低，且备份开销大</li>
+<li>存放外部链接；问题是授权，以及链接失效</li>
+</ul>
+<blockquote>
+<p>然后介绍不同记录之间的联系</p>
+</blockquote>
+<ul>
+<li>heap file</li>
+<li>Sequential File Organization</li>
+<li>multitable clustering</li>
+<li>partitioning</li>
+</ul>
+<p>heap file
+记录可以放在任意空闲的地方；通过free-space map可以知道空闲的空间；优点是插入和删除方便；缺点是查找开销大</p>
+<p>Sequential File Organization
+适用于按照某个属性排序好的记录，方便查找（如二分查找）；为了加快插入速度，插入时可以先通过指针域插入到overflow block中，而删除可以用逻辑删除，但是这样指针域和物理域顺序会不一致，所以还需要定时重新组织顺序
+<img loading="lazy" src="/blog/images/Pasted%20image%2020240802175905.png" alt=""  />
+</p>
+<p>multitable clustering
+常用于两个表之间经常进行连接操作，他们的数据存放于一个块中，就可以减少读取磁盘的时间；缺点是需要会增大读取单个表数据的开销；如例题13.3</p>
+<p>partitioning（分区）</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="k">select</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="k">transaction</span><span class="w"> </span><span class="k">where</span><span class="w"> </span><span class="k">year</span><span class="o">=</span><span class="mi">2019</span><span class="w">
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div><ol>
+<li>对于上述场景，只查找某一年份，可以将不同年份的数据分开存储，从而降低查找的开销</li>
+<li>如2019年之前的数据用的少，可以放在磁盘中，而2019的数据常用，可以放在SSD中</li>
+</ol>
+<p>系统目录（Data-Dictionary / system catalog）
+每个关系的元数据；如关系的名字，属性（名字，值域，长度），视图，约束，用户，索引，以及存储引擎</p>
+<p>缓冲区
+主存 &gt; 缓冲区 &gt; 磁盘
+目标是更快的获取常用的数据
+缓冲区的替换策略</p>
+<ul>
+<li>LRU</li>
+<li>MRU</li>
+</ul>
+<p>列存储
+适用于只使用某个属性的场景</p>
+<h2 id="131">13.1<a hidden class="anchor" aria-hidden="true" href="#131">#</a></h2>
+<blockquote>
+<p>考虑从图13.3中的文件中删除记录5。比较以下几种实现删除操作的技术的相对优点：
+a. 将记录6移动到记录5占据的位置，并将记录7移动到记录6占据的位置。
+b. 将记录7移动到记录5占据的位置。
+c. 将记录5标记为已删除，而不移动任何记录。</p>
+</blockquote>
+<p><img loading="lazy" src="/blog/images/Pasted%20image%2020240801171531.png" alt="500x250"  />
+</p>
+<p>a. 尽管将记录6移动到记录5的位置，并将记录7移动到记录6的位置是最直接的方法，但这种方法需要移动最多的记录，并涉及最多的访问操作。</p>
+<ul>
+<li>删去record 5，然后数组顺序上移</li>
+</ul>
+<p>b. 将记录7移动到记录5的位置，移动的记录数量比选项a少，但会破坏文件中的任何排序。</p>
+<ul>
+<li>我觉得题目意思应该是把最后一个record10放到5的位置，然后数组的size&ndash;</li>
+</ul>
+<p>c. 将记录5的空间标记为已删除，这样可以保持排序，并且不移动任何记录，但需要额外的开销来跟踪文件中的所有空闲空间。这种方法可能会导致文件中出现过多的“孔”，如果不定期进行压缩，将影响性能，因为可用的连续空闲记录减少。</p>
+<ul>
+<li>标记record5为已删除</li>
+</ul>
+<h2 id="132">13.2<a hidden class="anchor" aria-hidden="true" href="#132">#</a></h2>
+<blockquote>
+<p>展示图13.4中的文件在以下每一步操作后的结构：
+a. 插入记录 (24556, Turnamian, Finance, 98000)。
+b. 删除记录 2。
+c. 插入记录 (34556, Thompson, Music, 67000)</p>
+</blockquote>
+<p><img loading="lazy" src="/blog/images/Pasted%20image%2020240801172136.png" alt="500x300"  />
+
+这里空闲空间管理使用空闲链表</p>
+<p>a. 插入到record1位置</p>
+<p>b. 空闲链表变为：header -&gt; record2 -&gt; record4 -&gt; record6</p>
+<p>c. 插入到record2位置</p>
+<h2 id="133">13.3<a hidden class="anchor" aria-hidden="true" href="#133">#</a></h2>
+<blockquote>
+<p>考虑关系 <code>section</code> 和 <code>takes</code>。给出这两个关系的示例实例，其中有三个课程，每个课程都有五个学生。给出这些关系使用多表聚集（multitable clustering）的文件结构。</p>
+</blockquote>
+<hr>
+<p>section</p>
+<table>
+<thead>
+<tr>
+<th>course_id</th>
+<th>course_name</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>001</td>
+<td>english</td>
+</tr>
+<tr>
+<td>002</td>
+<td>math</td>
+</tr>
+<tr>
+<td>003</td>
+<td>chinese</td>
+</tr>
+</tbody>
+</table>
+<p>takes</p>
+<table>
+<thead>
+<tr>
+<th>course_id</th>
+<th>student_id</th>
+<th>score</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>001</td>
+<td>100</td>
+<td>99</td>
+</tr>
+<tr>
+<td>001</td>
+<td>101</td>
+<td>98</td>
+</tr>
+<tr>
+<td>001</td>
+<td>102</td>
+<td>98</td>
+</tr>
+<tr>
+<td>001</td>
+<td>103</td>
+<td>100</td>
+</tr>
+<tr>
+<td>001</td>
+<td>104</td>
+<td>60</td>
+</tr>
+<tr>
+<td>&hellip;</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>003</td>
+<td>199</td>
+<td>59</td>
+</tr>
+</tbody>
+</table>
+<p>multitable clustering</p>
+<table>
+<thead>
+<tr>
+<th>header1</th>
+<th>header2</th>
+<th>header3</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>001</td>
+<td>english</td>
+<td></td>
+</tr>
+<tr>
+<td>001</td>
+<td>100</td>
+<td>99</td>
+</tr>
+<tr>
+<td>001</td>
+<td>101</td>
+<td>98</td>
+</tr>
+<tr>
+<td>&hellip;</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>001</td>
+<td>104</td>
+<td>60</td>
+</tr>
+<tr>
+<td>&hellip;</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>003</td>
+<td>chinese</td>
+<td></td>
+</tr>
+<tr>
+<td>&hellip;</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>003</td>
+<td>199</td>
+<td>59</td>
+</tr>
+</tbody>
+</table>
+<h2 id="134">13.4<a hidden class="anchor" aria-hidden="true" href="#134">#</a></h2>
+<blockquote>
+<p>考虑使用位图表示空闲空间图，其中对于文件中的每个块，在位图中维护两个位。如果块的填充率在0到30％之间，位为00；在30到60％之间，位为01；在60到90％之间，位为10；超过90％，位为11。即使对于非常大的文件，这种位图也可以存储在内存中。
+a. 概述使用两个位来表示一个块的两个优点和一个缺点，而不是像本章前面描述的那样使用一个字节。
+b. 描述如何在记录插入和删除时保持位图的最新状态。
+c. 概述在搜索空闲空间和更新空闲空间信息时，位图技术相比空闲链表的优点。</p>
+</blockquote>
+<p>a. 优点：使用两个位来表示空闲空间的空间占用较少，且空闲空间映射需要更新的次数显著减少，因为许多插入/删除操作不会导致空闲空间映射的变化。缺点：这种方法只能提供对可用空闲空间的近似估计，这可能导致空间浪费和/或增加查找记录空闲空间的搜索成本。</p>
+<p>b. 每次插入或删除记录时，需要检查块的使用情况是否已经改变了级别。如果改变，就更新相应的位。否则我们根本不需要访问位图，因此在大多数情况下不会产生额外的开销。</p>
+<p>c. 当为一个大记录或一组记录寻找空闲空间时，可能需要扫描多个空闲链表条目才能找到合适大小的空间，因此开销会更高。而使用位图时，一页位图可以存储多个页面的空闲信息，因此寻找空闲空间所需的I/O操作最小化。同样，当整个块或其大部分被删除时，使用位图技术更新空闲空间信息更加方便。</p>
+<h2 id="135">13.5<a hidden class="anchor" aria-hidden="true" href="#135">#</a></h2>
+<blockquote>
+<p>快速确定一个块是否存在于缓冲区中，以及如果存在，它在缓冲区中的位置是非常重要的。考虑到数据库缓冲区的大小非常大，你会使用什么（内存中的）数据结构来完成这个任务？</p>
+</blockquote>
+<p>哈希表是大型数据库缓冲区中常用的数据结构。
+<code>hash_table[block_id] = buffer_id</code></p>
+<ul>
+<li>这里可以查看bustub源码</li>
+</ul>
+<h2 id="136">13.6<a hidden class="anchor" aria-hidden="true" href="#136">#</a></h2>
+<blockquote>
+<p>假设你们大学有大量的 <code>takes</code> 记录，这些记录在多年的积累中产生。请解释一下如何对 <code>takes</code> 关系进行表分区，并说明这种技术可能带来的好处。同时，请解释一种潜在的缺点。</p>
+</blockquote>
+<p>表可以根据 <code>(year, semester)</code> 进行分区。较旧的 <code>takes</code> 记录（不再经常访问的）可以存储在磁盘上，而较新的记录则可以存储在 SSD 上（它们也可以存储在像 Intel Optane 这样的存储级别内存上）。指定年份的查询可以在不读取其他年份记录的情况下得到回答。</p>
+<p>一个缺点是，涉及多个年份的查询会有更高的开销，因为记录可能分布在不同的关系和磁盘块中。</p>
+<h2 id="137">13.7<a hidden class="anchor" aria-hidden="true" href="#137">#</a></h2>
+<blockquote>
+<p>给出以下每种情况的关系代数表达式和查询处理策略的示例：
+a. MRU（最近最常使用）比 LRU（最近最少使用）更合适的情况。
+b. LRU（最近最少使用）比 MRU（最近最常使用）更合适的情况。</p>
+</blockquote>
+<hr>
+<p>a. 对于两个表连接，使用nested-loop时，MRU更合适；假设缓冲区只有2个位置，两个表R1和R2，扫描R1的第一个块，然后和R2全部块连接，R2第一个块连接后就没用了，MRU算法（选择最近最常使用的替换）马上将其替换；而LRU会替换R1的第一个块，导致后续的缓冲区换进换出问题</p>
+<p>b. 使用merge join时，LRU更合适</p>
+<ul>
+<li>这里以后了解hash join 和 merge join</li>
+</ul>
+<h2 id="138">13.8<a hidden class="anchor" aria-hidden="true" href="#138">#</a></h2>
+<blockquote>
+<p>PostgreSQL通常使用一个小的缓冲区，将其余主内存的文件系统缓冲管理工作交给操作系统缓冲管理器来处理。请解释以下内容：
+(a) 这种方法的好处是什么？
+(b) 这种方法的一个关键限制是什么？</p>
+</blockquote>
+<hr>
+<p>a. 数据库系统无法预测其他进程的内存需求。通过使用较小的缓冲区，PostgreSQL确保不会占用过多的主内存。同时，即使一个块从数据库缓冲区中被逐出，只要文件系统缓冲管理器分配了足够的内存，该被逐出的页面很可能仍会被保留在文件系统缓冲区中。因此，数据库缓冲失效通常不会非常昂贵，因为块仍可能在文件系统缓冲区中被缓存。（即一是不影响其他进程，二是可以加速数据库查询）</p>
+<p>b. 这种方法的缺点是数据库系统可能无法控制文件系统缓冲区的替换策略。因此，操作系统可能会做出不理想的决定，导致文件系统缓冲区中的内容被不适当地逐出。</p>
+<h2 id="139">13.9<a hidden class="anchor" aria-hidden="true" href="#139">#</a></h2>
+<blockquote>
+<p>在可变长度记录表示中，使用空值位图来指示某个属性是否为空值。
+a. 对于可变长度字段，如果值为空，则在偏移量和长度字段中会存储什么？
+b. 在某些应用中，元组具有大量属性，其中大多数是空值。你能否修改记录表示，使得空属性的唯一开销仅是空值位图中的一个比特位？</p>
+</blockquote>
+<hr>
+<p>a.  存储什么都可以，最好都设置为0避免出错。</p>
+<p>b. 是的。通过将 null 位图存储在记录的开头，我们就不需要存储数据（值或偏移/长度）。这种表示方法可以节省一些存储空间，但需要额外的工作来提取记录的属性。这种表示方法特别适用于某些记录具有大量字段且大多数字段为空的应用。</p>
+<ul>
+<li>如<code>bitmap | (offset, length) | data</code>，查找某一属性时，若bitmap对应位是0，则找相应的(offset, length)从而找到data</li>
+</ul>
+<h2 id="1310">13.10<a hidden class="anchor" aria-hidden="true" href="#1310">#</a></h2>
+<blockquote>
+<p>解释为什么记录分配到块的方式对数据库系统性能有显著影响。</p>
+</blockquote>
+<hr>
+<p>如果我们将相关的记录分配到同一块中，我们通常可以通过一次磁盘访问来检索大部分或全部所需的记录。磁盘访问往往是数据库的瓶颈，因为这种分配策略减少了执行特定操作所需的磁盘访问次数，从而显著提高了性能。</p>
+<h2 id="1311">13.11<a hidden class="anchor" aria-hidden="true" href="#1311">#</a></h2>
+<blockquote>
+<p>列出以下每种存储关系数据库策略的两个优点和两个缺点：
+a. 将每个关系存储在一个文件中。
+b. 将多个关系（甚至整个数据库）存储在一个文件中。</p>
+</blockquote>
+<hr>
+<p>a.</p>
+<ul>
+<li>优点：由于每个关系存储在自己的文件中，因此可以将经常使用的关系放在SSD上，而将不常使用的关系存储在磁盘驱动器上。假设给定文件的块在硬盘盘片上存储得很接近，从硬盘读取关系到内存会更快，因为块之间距离更近，减少了磁盘臂的移动。</li>
+<li>缺点：由于每个关系存储在自己的文件中，因此无法执行诸如多表聚簇(multitable clustering)文件组织之类的优化。每次访问关系时，必须首先通过数据字典/系统目录来获取相应的文件路径。一旦找到路径，打开文件（例如使用 open() 系统调用）会产生开销。</li>
+</ul>
+<p>b.</p>
+<ul>
+<li>优点：如果需要，可以执行诸如多表聚簇文件组织等优化。假设整个数据库存储在一个文件中（如 SQLite），我们只需要调用一次 <code>open()</code> 系统调用。关系之间的组织可以由DBMS自己决定，而不是OS决定。</li>
+<li>缺点：如果数据库将所有关系存储在一个文件中，数据字典可能会在数据结构中（例如链表）记录每个关系的记录所在的块。然而，这样做会使我们失去从硬盘到主内存的顺序读取的好处。（即：由于文件中记录的位置可能是分散的，系统需要不断地跳转到不同的块进行读取，这样可能会增加磁盘的寻道时间，降低整体读取效率。）由于数据库的所有关系都存储在同一个文件中，因此无法进行优化，比如将某些关系存储在SSD上，而将其他关系存储在磁盘驱动器上（或者这样做很困难）。</li>
+</ul>
+<h2 id="1312">13.12<a hidden class="anchor" aria-hidden="true" href="#1312">#</a></h2>
+<blockquote>
+<h2 id="在顺序文件组织中即使当前只有一个溢出记录为何还要使用溢出块">在顺序文件组织中，即使当前只有一个溢出记录，为何还要使用溢出块？<a hidden class="anchor" aria-hidden="true" href="#在顺序文件组织中即使当前只有一个溢出记录为何还要使用溢出块">#</a></h2>
+</blockquote>
+<p>因为我们预计将来会有更多的插入记录。如果在删除操作后没有足够的空间，新的插入记录将被放置在溢出块中，并且指针将按照顺序指向这些记录。</p>
+<h2 id="1313">13.13<a hidden class="anchor" aria-hidden="true" href="#1313">#</a></h2>
+<blockquote>
+<p>将 <code>Index_metadata</code> 关系规范化，并解释为什么使用规范化版本会导致性能下降。</p>
+</blockquote>
+<hr>
+<p>原文：figure13-12，index_attributes包括其他属性，所以需要化成第一范式
+<img loading="lazy" src="/blog/images/Pasted%20image%2020240804131043.png" alt=""  />
+
+可以把index_metadata改为
+<code>index_metadata(index_name, relation_name, index_type)</code>
+而index_attributes成新的表
+<code>index_name, other_attributes</code></p>
+<p>性能下降的原因：不同表可能放在磁盘不同位置，寻找开销大；而且需要连接操作</p>
+<h2 id="1314">13.14<a hidden class="anchor" aria-hidden="true" href="#1314">#</a></h2>
+<blockquote>
+<p>标准的缓冲区管理器假设每个块的大小相同，并且读取成本相同。考虑一种缓冲区管理器，它不是使用 LRU（最近最少使用算法），而是使用对象的引用率，即一个对象在最近几秒钟内被访问的频率。假设我们希望在缓冲区中存储大小和读取成本各不相同的对象（例如网页，读取成本取决于从哪个网站获取）。建议缓冲区管理器如何选择从缓冲区中驱逐哪个块。</p>
+</blockquote>
+<hr>
+<p>一个好的解决方案是使用优先队列来驱逐页面，其中优先级 (p) 是根据页面的预期重读成本来排序的，该预期重读成本由页面在过去 n 秒内的访问频率 (f)、页面的重读成本 (c) 和页面大小 (s) 决定。公式如下：
+p=c * s / f
+缓冲区管理器应选择驱逐优先级值最低的页面，直到有足够的空闲空间来读取新引用的对象。</p>
+<h1 id="c14-indexing">C14 indexing<a hidden class="anchor" aria-hidden="true" href="#c14-indexing">#</a></h1>
+<h2 id="笔记-1">笔记<a hidden class="anchor" aria-hidden="true" href="#笔记-1">#</a></h2>
+<blockquote>
+<p>介绍索引14.1-5</p>
+</blockquote>
+<p>问题引入：如词典查单词非常麻烦，如果可以按照字母排序，查单词会简单很多；同样地，索引可以加速找到数据所在的位置</p>
+<p>搜索键：一个或多个属性组成，用来查找record</p>
+<p>索引指标：访问类型，访问、插入、删除时间，空间开销</p>
+<p>两种基本索引</p>
+<ul>
+<li>ordered indices</li>
+<li>hash indices</li>
+</ul>
+<h3 id="顺序索引">顺序索引<a hidden class="anchor" aria-hidden="true" href="#顺序索引">#</a></h3>
+<p>ordered indices：按照某个属性排序建立的索引</p>
+<ul>
+<li>clustering index：索引顺序和record在文件中的顺序一致；如按单词首字母排好序的字典目录</li>
+<li>primary indices：主键上构建的索引，通常也是clustering index</li>
+<li>secondary(nonclustering) indices：索引顺序和record在文件中顺序不一致；如乱序词典的目录</li>
+<li>Dense index：每个键都构建索引
+<img loading="lazy" src="/blog/images/Pasted%20image%2020240803012711.png" alt=""  />
+</li>
+<li>Sparse index：部分键构建索引；如寻找22222，可以先通过索引找到10101，再进行顺序查找；相较于dense index可以减少空间，只要从磁盘取到块于主存中，多的时间开销可以不计
+<img loading="lazy" src="/blog/images/Pasted%20image%2020240803011709.png" alt=""  />
+</li>
+<li>Multilevel Indices：当索引过大，可以构建多层索引减少空间，类似树
+<img loading="lazy" src="/blog/images/Pasted%20image%2020240803011658.png" alt="500*400"  />
+</li>
+</ul>
+<p>顺序索引的更新和删除操作：略</p>
+<p>secondary index：必须是dense index，因为对于排序好的主键可以通过顺序访问一部分来查找，而非候选码不是按顺序存放的；所以对于相同的键，需要分配桶
+<img loading="lazy" src="/blog/images/Pasted%20image%2020240803020028.png" alt=""  />
+</p>
+<h3 id="b-tree">B+ tree<a hidden class="anchor" aria-hidden="true" href="#b-tree">#</a></h3>
+<p>基本特点
+<img loading="lazy" src="/blog/images/Pasted%20image%2020240816020905.png" alt=""  />
+</p>
+<ul>
+<li>数据指针在叶子节点中</li>
+<li>每个节点指针域至少存满一半</li>
+<li>根节点到叶子节点距离相同</li>
+<li>每个节点内键都有序</li>
+<li>某个键的左边键小，右边大；即$K(l) &lt;= Ki &lt; K(r)$，最左边的节点满足$K(l) &lt; k$，最右边满足$k &gt;= K(r)$</li>
+</ul>
+<p>查询：假设没有重复的键
+单个键v：从根节点出发，利用键左边小右边大的原则直到找到叶子节点
+范围查询：先找lb，再遍历叶子节点知道键&gt;rb</p>
+<p>插入
+叶子节点满了，分裂，右节点的第一个键去父节点（保留键在右节点中）
+中间节点满了，分类，右节点第一个键去父节点（不保留）</p>
+<p>删除</p>
+<ul>
+<li>叶子下溢出：$key &lt; ⌈(d−1)/2⌉$，d为节点最大的指针数量</li>
+<li>中间节点下溢出：$pointer &lt; ⌈d/2⌉$
+向兄弟节点借
+合并：如下图，删除<code>Gold</code>，叶子节点下溢出，与兄弟节点合并；中间节点<code>Kim</code>没了，根节点向下补充，随后根节点也下溢出，最后两个中间节点Merge
+<img loading="lazy" src="/blog/images/Pasted%20image%2020240816151253.png" alt=""  />
+
+<img loading="lazy" src="/blog/images/Pasted%20image%2020240816151303.png" alt=""  />
+</li>
+</ul>
+<p>疑问</p>
+<ul>
+<li>为什么B+常用，为什么不选择排序/哈希索引</li>
+<li>怎么分析索引好用，增删改时间复杂度？二级索引？多值索引？</li>
+</ul>
+<h3 id="hash-index">hash index<a hidden class="anchor" aria-hidden="true" href="#hash-index">#</a></h3>
+<p><a href="file:///D:/code_app/cmu15445/Database.System.Concepts.7th.2019.4.pdf">Database.System.Concepts.7th.2019.4.pdf</a></p>
+<p><a href="https://chatgpt.com/c/bb891cd3-c58e-4fd0-b143-c4fdc8603f7d">试用次数查询 (chatgpt.com)</a></p>
+<p>hash用途</p>
+<ul>
+<li>内存中创建索引；适用于hash-join等</li>
+<li>内存数据库</li>
+<li>文件中record的组织方式</li>
+</ul>
+<p>in-memory hashing
+disk-based hashing</p>
+<p>支持等值查找，但不支持范围查找，因为键不是排序的</p>
+<p>bucket：hash_function(key) = bucket_address；一个桶可以对应多个记录的地址，即同一个键对应的多个记录用overflow chaining处理
+bucket overflow：当桶数量太少，或者分布不均匀时，会发生桶溢出，即一个桶对应多个记录</p>
+<p>static hashing：提前知道记录的个数；为了减少桶溢出的概率，桶的数量通常选择为 (n / f ) × (1 + d)，其中 n表示记录的数量，f 表示每个桶可容纳的记录数量，d 是一个调整因子，通常大约为 0.2。调整因子为 0.2 时，桶中的大约 20% 的空间将保持空闲。</p>
+<ul>
+<li>静态哈希的缺点：当索引数量增加，需要重新调整桶的数量，会影响正常查询</li>
+<li>设计hash function目标：键均匀分布于桶中；分布需要均匀（每个桶键范围相同）随机（键均匀分布桶中）</li>
+</ul>
+<p>dynamic hashing：linear hashing and extendable hashing，章节24.5，P1227
+extendable hashing
+<img loading="lazy" src="/blog/images/Pasted%20image%2020240803150429.png" alt="500*400"  />
+</p>
+<h3 id="先跳过">先跳过<a hidden class="anchor" aria-hidden="true" href="#先跳过">#</a></h3>
+<p>p695</p>
+<ul>
+<li>multiple-key access</li>
+<li>creation of indices</li>
+<li>write-optimized index structures，如LSM tree</li>
+<li>bitmap indices</li>
+<li>indexing of spatial and tempral data</li>
+</ul>
+<h2 id="141">14.1<a hidden class="anchor" aria-hidden="true" href="#141">#</a></h2>
+<blockquote>
+<p>索引加快了查询处理速度，但在每个属性以及所有可能的属性组合上创建索引通常是一个坏主意。请解释原因。</p>
+</blockquote>
+<hr>
+<p>不在每个属性上都保留索引的原因包括：</p>
+<ul>
+<li>
+<p>每个索引在插入和删除操作时都会增加额外的CPU时间和磁盘I/O开销。</p>
+</li>
+<li>
+<p>非主键的索引在更新时可能需要更改，尽管主键的索引可能不需要更改（这是因为更新通常不会修改主键属性）。</p>
+</li>
+<li>
+<p>每个额外的索引都需要额外的存储空间。</p>
+</li>
+<li>
+<p>对于涉及多个搜索键的查询，即使只有部分键上有索引，效率也可能不会太差。因此，当已经存在许多索引时，通过添加更多索引对数据库性能的提升较小。</p>
+</li>
+</ul>
+<h2 id="142">14.2<a hidden class="anchor" aria-hidden="true" href="#142">#</a></h2>
+<blockquote>
+<p>一般情况下，是否可以在同一个关系上为不同的搜索键拥有两个聚簇索引？请解释您的答案。</p>
+</blockquote>
+<hr>
+<p>一般来说，不可能在同一个关系上为不同的键拥有两个聚簇索引，因为聚集索引决定了数据的物理存储顺序，多个聚簇索引需要多次存储。
+这会导致磁盘空间的浪费，并且在插入、更新和删除数据时需要维护多个聚集索引，从而降低性能。此外，多个聚集索引还会增加查询优化器的复杂性，使其难以选择最优的查询计划。查询优化器需要评估多个聚集索引的成本和选择合适的索引来执行查询，这将增加查询的执行时间。</p>
+<h2 id="143">14.3<a hidden class="anchor" aria-hidden="true" href="#143">#</a></h2>
+<blockquote>
+<p>构造一个 B+-树，键值集合为：$$ (2, 3, 5, 7, 11, 17, 19, 23, 29, 31) $$ 假设树最初为空，值按照升序添加。构造 B+树的情况如下：</p>
+</blockquote>
+<p><a href="https://www.cs.usfca.edu/~galles/visualization/BPlusTree.html">B+ Tree Visualization (usfca.edu)</a></p>
+<p>a. 每个节点可以容纳四个指针
+<img loading="lazy" src="/blog/images/Pasted%20image%2020240804141850.png" alt=""  />
+</p>
+<p>b. 每个节点可以容纳六个指针
+<img loading="lazy" src="/blog/images/Pasted%20image%2020240804142008.png" alt=""  />
+</p>
+<p>c. 每个节点可以容纳八个指针
+<img loading="lazy" src="/blog/images/Pasted%20image%2020240804142217.png" alt="500"  />
+</p>
+<ul>
+<li>同理，14.4可以去上述网站检验</li>
+</ul>
+<h2 id="145">14.5<a hidden class="anchor" aria-hidden="true" href="#145">#</a></h2>
+<blockquote>
+<h2 id="考虑第651页描述的b-树的修改后的重新分配方案树的期望高度作为n的函数是什么">考虑第651页描述的B+-树的修改后的重新分配方案。树的期望高度作为n的函数是什么？<a hidden class="anchor" aria-hidden="true" href="#考虑第651页描述的b-树的修改后的重新分配方案树的期望高度作为n的函数是什么">#</a></h2>
+</blockquote>
+<p><img loading="lazy" src="/blog/images/Pasted%20image%2020240806131459.png" alt=""  />
+</p>
+<ul>
+<li>m是nodes个数, n是每个nodes最大的记录数</li>
+</ul>
+<p>问题：b+树的高度计算</p>
+<ul>
+<li>理想情况：B^height = K</li>
+</ul>
+<h2 id="146">14.6<a hidden class="anchor" aria-hidden="true" href="#146">#</a></h2>
+<blockquote>
+<p>编写一个B+树的函数 <code>findRangeIterator()</code> 的伪代码，它与函数 <code>findRange()</code> 类似，但返回的是一个迭代器对象，如 14.3.2 节中所描述的那样。此外，还需要提供迭代器类的伪代码，包括迭代器对象中的变量和 <code>next()</code> 方法。</p>
+</blockquote>
+<hr>
+<h2 id="147">14.7<a hidden class="anchor" aria-hidden="true" href="#147">#</a></h2>
+<blockquote>
+<h2 id="如果索引条目按排序顺序插入到b树中每个叶节点的占用率会是多少请解释原因">如果索引条目按排序顺序插入到B+树中，每个叶节点的占用率会是多少？请解释原因。<a hidden class="anchor" aria-hidden="true" href="#如果索引条目按排序顺序插入到b树中每个叶节点的占用率会是多少请解释原因">#</a></h2>
+</blockquote>
+<p>设n为单个节点的最大记录数</p>
+<p><img loading="lazy" src="/blog/images/Pasted%20image%2020240806135232.png" alt=""  />
+
+升序插入1-9：如果索引条目按升序插入，新的条目会被定向到最后一个叶节点。当该叶节点被填满时，它会被分裂成两个。分裂生成的两个节点中，左节点不会再被修改，插入操作将发生在右节点。这导致叶节点的占用率约为 50%（[n/2]/n，[]是下取整），除了最后一个叶节点以外。
+<img loading="lazy" src="/blog/images/Pasted%20image%2020240806135143.png" alt=""  />
+
+降序插入9-1：如果插入的键按降序排序，上述情况仍然会发生，但对称地，分裂后的右节点将不再被修改，并且除了第一个叶节点之外，所有节点的占用率为<code>(n-1)/n</code></p>
+<h2 id="148">14.8<a hidden class="anchor" aria-hidden="true" href="#148">#</a></h2>
+<blockquote>
+<p>假设你有一个包含 $n_r$ 个元组的关系r，并在其上构建一个辅助 B+ 树。
+a. 给出通过每次插入一条记录来构建 B+ 树索引的成本公式。假设每个块平均可以容纳 f 个条目，并且树中叶节点以上的所有层都在内存中。
+b. 假设一次随机磁盘访问需要 10 毫秒，计算在一个包含 1000 万条记录的关系上构建索引的成本。
+c. 编写自底向上构建 B+ 树的伪代码，该方法在第 14.4.4 节中概述。你可以假设有一个函数可以有效地对大文件进行排序。</p>
+</blockquote>
+<hr>
+<p>a.</p>
+
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+      <li><a href="http://localhost:1313/blog/en/tags/lab/">Lab</a></li>
+      <li><a href="http://localhost:1313/blog/en/tags/database/">Database</a></li>
+      <li><a href="http://localhost:1313/blog/en/tags/%23database_system_concepts/">#Database_system_concepts</a></li>
+      <li><a href="http://localhost:1313/blog/en/tags/database_system_concepts/">Database_system_concepts</a></li>
+    </ul>
+<nav class="paginav">
+  <a class="prev" href="http://localhost:1313/blog/en/posts/lab/bustub/lab0/">
+    <span class="title">« Prev</span>
+    <br>
+    <span>cmu15445--lab0</span>
+  </a>
+  <a class="next" href="http://localhost:1313/blog/en/posts/lab/accelerated_cpp/accelerated-c&#43;&#43;-c0/">
+    <span class="title">Next »</span>
+    <br>
+    <span>Accelerated C&#43;&#43; charpter0</span>
+  </a>
+</nav>
+
+
+  </footer>
+<div>    
+    <div class="pagination__title">
+        <span class="pagination__title-h" style="font-size: 20px;">评论</span>
+        <br/>
+    </div>
+    <div id="tcomment"></div>
+	<script src="https://utteranc.es/client.js"
+        	repo="lbjfans/blog_comment"
+        	issue-term="url"
+        	theme="github-light"
+        	crossorigin="anonymous"
+        	async>
+	</script>
+</div>
+
+
+  
+  
+
+</article>
+    </main>
+    
+<footer class="footer">
+        <span>&copy; 2024 <a href="http://localhost:1313/blog/en/">lbjfans</a></span> · 
+
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerHTML = 'copy';
+
+        function copyingDone() {
+            copybutton.innerHTML = 'copied!';
+            setTimeout(() => {
+                copybutton.innerHTML = 'copy';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                navigator.clipboard.writeText(codeblock.textContent);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) { };
+            selection.removeRange(range);
+        });
+
+        if (container.classList.contains("highlight")) {
+            container.appendChild(copybutton);
+        } else if (container.parentNode.firstChild == container) {
+            
+        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
+            
+            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+        } else {
+            
+            codeblock.parentNode.appendChild(copybutton);
+        }
+    });
+</script>
+</body>
+
+</html>

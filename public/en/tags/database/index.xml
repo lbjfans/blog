@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>Database on lbjfans</title>
+    <link>http://localhost:1313/blog/en/tags/database/</link>
+    <description>Recent content in Database on lbjfans</description>
+    <generator>Hugo -- 0.128.2</generator>
+    <language>en</language>
+    <lastBuildDate>Thu, 15 Aug 2024 14:41:00 +0800</lastBuildDate>
+    <atom:link href="http://localhost:1313/blog/en/tags/database/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>cmu15445--lab2 b&#43; tree</title>
+      <link>http://localhost:1313/blog/en/posts/lab/bustub/lab2-b&#43;tree/</link>
+      <pubDate>Thu, 15 Aug 2024 14:41:00 +0800</pubDate>
+      <guid>http://localhost:1313/blog/en/posts/lab/bustub/lab2-b&#43;tree/</guid>
+      <description>cmu15445 lab2 b+ tree</description>
+    </item>
+    <item>
+      <title>cmu15445--lab1 buffer pool</title>
+      <link>http://localhost:1313/blog/en/posts/lab/bustub/lab1-buffer-pool/</link>
+      <pubDate>Mon, 12 Aug 2024 14:41:00 +0800</pubDate>
+      <guid>http://localhost:1313/blog/en/posts/lab/bustub/lab1-buffer-pool/</guid>
+      <description>cmu15445 lab1 buffer pool</description>
+    </item>
+    <item>
+      <title>database system concepts --  transaction</title>
+      <link>http://localhost:1313/blog/en/posts/lab/database_system_concepts/part7-transaction-management/</link>
+      <pubDate>Sat, 10 Aug 2024 14:41:00 +0800</pubDate>
+      <guid>http://localhost:1313/blog/en/posts/lab/database_system_concepts/part7-transaction-management/</guid>
+      <description>数据库系统概览&amp;ndash;并发和恢复部分，笔记 + 课后题</description>
+    </item>
+    <item>
+      <title>database system concepts --  query</title>
+      <link>http://localhost:1313/blog/en/posts/lab/database_system_concepts/part6-query-processing-and-optimization/</link>
+      <pubDate>Sun, 04 Aug 2024 14:41:00 +0800</pubDate>
+      <guid>http://localhost:1313/blog/en/posts/lab/database_system_concepts/part6-query-processing-and-optimization/</guid>
+      <description>数据库系统概览&amp;ndash;查询处理和优化部分，笔记 + 课后题</description>
+    </item>
+    <item>
+      <title>cmu15445--lab0</title>
+      <link>http://localhost:1313/blog/en/posts/lab/bustub/lab0/</link>
+      <pubDate>Fri, 02 Aug 2024 14:41:00 +0800</pubDate>
+      <guid>http://localhost:1313/blog/en/posts/lab/bustub/lab0/</guid>
+      <description>cmu15445 环境配置和lab0</description>
+    </item>
+    <item>
+      <title>database system concepts --  storage</title>
+      <link>http://localhost:1313/blog/en/posts/lab/database_system_concepts/part5-storage-management-and-indexing/</link>
+      <pubDate>Wed, 31 Jul 2024 14:41:00 +0800</pubDate>
+      <guid>http://localhost:1313/blog/en/posts/lab/database_system_concepts/part5-storage-management-and-indexing/</guid>
+      <description>数据库系统概览&amp;ndash;存储和索引部分，笔记 + 课后题</description>
+    </item>
+  </channel>
+</rss>

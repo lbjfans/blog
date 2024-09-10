@@ -1,0 +1,836 @@
+<!DOCTYPE html>
+<html lang="en" dir="auto">
+
+<head><script src="/blog/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=blog/livereload" data-no-instant defer></script><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+
+
+<title>database system concepts --  query | lbjfans</title>
+<meta name="keywords" content="lab, database, #database_system_concepts, database_system_concepts">
+<meta name="description" content="数据库系统概览&ndash;查询处理和优化部分，笔记 &#43; 课后题">
+<meta name="author" content="lbjfans">
+<link rel="canonical" href="http://localhost:1313/blog/en/posts/lab/database_system_concepts/part6-query-processing-and-optimization/">
+<link crossorigin="anonymous" href="/blog/assets/css/stylesheet.af426310e146b199cc19c33acd2cd52502983e6f8cd40d5af80a041bf9ad8ee0.css" integrity="sha256-r0JjEOFGsZnMGcM6zSzVJQKYPm&#43;M1A1a&#43;AoEG/mtjuA=" rel="preload stylesheet" as="style">
+<link rel="icon" href="http://localhost:1313/blog/img/logo.jpg">
+<link rel="icon" type="image/png" sizes="16x16" href="http://localhost:1313/blog/img/logo.jpg">
+<link rel="icon" type="image/png" sizes="32x32" href="http://localhost:1313/blog/img/logo.jpg">
+<link rel="apple-touch-icon" href="http://localhost:1313/blog/logo.jpg">
+<link rel="mask-icon" href="http://localhost:1313/blog/logo.jpg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<link rel="alternate" hreflang="en" href="http://localhost:1313/blog/en/posts/lab/database_system_concepts/part6-query-processing-and-optimization/">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --code-block-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme);
+            }
+        }
+
+    </style>
+</noscript><script type="text/javascript"
+        async
+        src="https://cdn.bootcss.com/mathjax/2.7.3/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+MathJax.Hub.Config({
+  tex2jax: {
+    inlineMath: [['$','$'], ['\\(','\\)']],
+    displayMath: [['$$','$$'], ['\[\[','\]\]']],
+    processEscapes: true,
+    processEnvironments: true,
+    skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+    TeX: { equationNumbers: { autoNumber: "AMS" },
+         extensions: ["AMSmath.js", "AMSsymbols.js"] }
+  }
+});
+
+MathJax.Hub.Queue(function() {
+    
+    
+    
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i = 0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+});
+</script>
+
+<style>
+code.has-jax {
+    font: inherit;
+    font-size: 100%;
+    background: inherit;
+    border: inherit;
+    color: #515151;
+}
+</style>
+
+  
+    
+      <script async src="https://www.googletagmanager.com/gtag/js?id=G-0V0J7RS7X4"></script>
+      <script>
+        var doNotTrack = false;
+        if ( false ) {
+          var dnt = (navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack);
+          var doNotTrack = (dnt == "1" || dnt == "yes");
+        }
+        if (!doNotTrack) {
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', 'G-0V0J7RS7X4');
+        }
+      </script>
+    
+  
+
+<meta property="og:title" content="database system concepts --  query" />
+<meta property="og:description" content="数据库系统概览&ndash;查询处理和优化部分，笔记 &#43; 课后题" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="http://localhost:1313/blog/en/posts/lab/database_system_concepts/part6-query-processing-and-optimization/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2024-08-04T14:41:00+08:00" />
+<meta property="article:modified_time" content="2024-08-04T14:41:00+08:00" />
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="database system concepts --  query"/>
+<meta name="twitter:description" content="数据库系统概览&ndash;查询处理和优化部分，笔记 &#43; 课后题"/>
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position":  1 ,
+      "name": "文章",
+      "item": "http://localhost:1313/blog/en/posts/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "项目相关",
+      "item": "http://localhost:1313/blog/en/posts/lab/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  3 ,
+      "name": "the translation and notes for database system concepts 7th",
+      "item": "http://localhost:1313/blog/en/posts/lab/database_system_concepts/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  4 ,
+      "name": "database system concepts --  query",
+      "item": "http://localhost:1313/blog/en/posts/lab/database_system_concepts/part6-query-processing-and-optimization/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "database system concepts --  query",
+  "name": "database system concepts --  query",
+  "description": "数据库系统概览\u0026ndash;查询处理和优化部分，笔记 + 课后题",
+  "keywords": [
+    "lab", "database", "#database_system_concepts", "database_system_concepts"
+  ],
+  "articleBody": "C15 query processing 教材内容：charpter 15, 22\n笔记 概述\n用户输入SQL语句，翻译为关系代数/语法树，经过优化器生成最终的语法树，最后执行输出 在本章中，我们研究如何评估查询计划中的单个操作以及如何估算其成本；我们将在第 16 章回到查询优化的问题。第 15.2 节概述了如何测量查询的成本。第 15.3 节到第 15.6 节讨论了单个关系代数操作的评估。多个操作可以组合成一个流水线，在流水线中，每个操作在处理输入元组时，输入元组可能正由其他操作生成。在第 15.7 节，我们探讨了如何协调查询评估计划中多个操作的执行，特别是如何使用流水线操作来避免将中间结果写入磁盘。\n测量查询的成本\n开销（执行计划 + 单个算子的开销）\n磁盘IO CPU 分布式通信 为什么不最小化响应时间？\nSQL \u003e buffer \u003e disk，因为buffer内容随机，所以buffer占比更多的查询会更快 对于并行IO，如RAID；T1需要访问更多的磁盘块但是可以并行读取，而T2访问很少的磁盘块但是只能串行读取 所以响应时间并不可靠，可以最小化资源开销 select\n假设$t_s$为磁盘的寻道以及旋转时间，而$t_T$为传输时间，$b_r$是一个文件中块的个数 A1：第一种情况是全表线性扫描；第二种情况是只输出对应的key，所以遍历到合适的就终止，平均即$b_r/2$ A2：b+树，先查询索引，再查询一条记录（b+树每个节点放在一个块中） A3：b+树，先查询索引，再查询该记录的非关键字属性（b是该记录占的块数，假设块连续存放） A4：第一种，同A2，使用二级索引；第二种，先找索引，再找n次记录（因为二级索引不连续） A5：范围查找，同A3 A6：二级索引的范围查找，同A4 sorting\n排序的原因\n输出需要排序 如join使用排序的数据会更快 外部归并排序\njoin\n针对等值连接，可以分类为\nnested-join naive：每个R元组都遍历一次S block：R每个块对应一次S index：对于R每个元组用索引去S里找 sort：排序 + 合并 hash：RS同时哈希 other\nduplicate elimination：排序，哈希 projection set operations：集合操作，哈希 outer join aggregation\n完整表达式的计算\n两种\nMaterialization：每个算子存储中间结果，最后输出 pipeline：不存储中间结果，每个算子的结果直接传给下一个 15.1 假设（为了简化这个练习）每个块只能容纳一个元组，并且内存最多只能容纳三个块。请展示在每次排序合并算法的过程中创建的运行（runs），当对以下元组进行排序时，按第一个属性排序：(kangaroo, 17), (wallaby, 21), (emu, 1), (wombat, 13), (platypus, 3), (lion, 8), (warthog, 4), (zebra, 11), (meerkat, 6), (hyena, 9), (hornbill, 2), (baboon, 12). 这里我感觉有问题，因为内存最多3个block，所以因该是用2-路归并（有一个块作为输出块） 15.2 考虑图15.14中的银行数据库，其中主键已下划线标出，并给出如下SQL查询：\n1 2 3 SELECT T.branch_name FROM branch T, branch S WHERE T.assets \u003e S.assets AND S.branch_city = \"Brooklyn\" 编写一个与此查询等效的高效关系代数表达式，并说明选择的理由。\n这个表达式在可能的最小数据量上执行了θ连接。它通过将连接的右侧操作数限制为仅包含布鲁克林的分支，并且还从两个操作数中删除不必要的属性来实现这一点。\n15.3 假设关系 ( r1(A, B, C) ) 和 ( r2(C, D, E) ) 具有以下属性：( r1 ) 有 20,000 个元组，( r2 ) 有 45,000 个元组，( r1 ) 的 25 个元组可以放在一个块中，( r2 ) 的 30 个元组可以放在一个块中。使用以下每种连接策略连接 ( r1 ) 和 ( r2 ) 时，估算所需的块传输和查找次数： a. 嵌套循环连接（Nested-loop join）。\nb. 块嵌套循环连接（Block nested-loop join）。\nc. 归并连接（Merge join）。\nd. 哈希连接（Hash join）。\n关系 r1 需要 800 个块，关系 r2 需要 1500 个块。假设内存中有 M 页。如果 M \u003e 800，即使使用简单的嵌套循环连接，也可以轻松完成连接操作，仅需 1500 + 800 次磁盘访问。因此，我们只考虑 M \u003c= 800 页的情况。\na. 使用 r1 作为外部关系时，需要 20,000 × 1,500 + 800 = 30,000,800 次磁盘访问。 如果 r2 是外部关系，则需要 45,000 × 800 + 1,500 = 36,001,500 次磁盘访问。\nr1需要20000/25 = 800块，r2需要45000 / 30 = 1500块，正常会把小表放外层循环（即r1） b. 如果 r1 是外部关系，则需要 $\\lceil \\frac{800}{M - 1} \\rceil \\times 1500 + 800$ 次磁盘访问。如果 r2 是外部关系，则需要 $\\lceil \\frac{1500}{M - 1} \\rceil \\times 800 + 1500$ 次磁盘访问。\nc. 假设 $r_1$ 和 $r_2$ 在连接键上没有初始排序，并且 $b_b = 1$，总的排序成本（包括输出）为：\n$$ B_s = 1500 \\left(2 \\lceil \\log_{M - 1} \\left(\\frac{1500}{M}\\right) \\rceil + 2\\right) + 800 \\left(2 \\lceil \\log_{M - 1} \\left(\\frac{800}{M}\\right) \\rceil + 2\\right) $$\n磁盘访问次数。假设具有相同连接属性值的所有元组都可以放入内存中，总成本为 $B_s + 1500 + 800$ 磁盘访问次数。\nd. 我们假设不会发生溢出。由于 $r_1$ 较小，我们将其作为构建关系（build relation），而将 $r_2$ 作为探测关系（probe relation）。如果 $M \u003e 800$，即不需要递归划分，则成本为 $3 \\times (1500 + 800) = 6900$ 磁盘访问次数；否则，成本为\n$$ 2 \\times (1500 + 800) \\lceil \\log_{M-1}(800) - 1 \\rceil + 1500 + 800 $$\n磁盘访问次数。\n15.4 如果索引是二级索引且在连接属性上有多个具有相同值的元组，则第15.5.3节中描述的索引嵌套循环连接算法可能效率低下。这是为什么呢？请描述一种利用排序来减少检索内部关系元组成本的方法。在什么情况下，这种算法会比混合归并连接算法更高效？\n不懂 15.5 设$r$和$s$为没有索引的关系，且假设这些关系未排序。假设内存无限，计算$r \\bowtie s$的最低成本（以I/O操作为单位）是什么？这种算法需要多少内存？\n我们可以将较小的关系完全存储在内存中，逐块读取较大的关系，并使用较大的关系作为外层关系来执行嵌套循环连接。I/O操作的数量等于 $b_r + b_s$，内存需求为 $\\min(b_r, b_s) + 2$ 页。\n15.6 考虑数据库图 15.14，其中主键下划线。假设关系 branch 上有一个关于 branch_city 的 $B^+$-树索引，且没有其他索引。列出处理涉及否定的选择操作的不同方法：\na. $\\sigma_{\\neg (branch_city \u003c “Brooklyn”)}(branch)$\n使用索引定位 branch_city 字段值为 “Brooklyn” 的第一个元组。从这个元组开始，沿着指针链访问所有后续的元组，直到检索到所有相关的元组。\nb. $\\sigma_{\\neg (branch_city = “Brooklyn”)}(branch)$\n对于这个查询，索引没有作用。我们可以顺序扫描文件，并选择所有 branch_city 字段不是 “Brooklyn” 的元组。\nc. $\\sigma_{\\neg (branch_city \u003c “Brooklyn” \\lor assets \u003c 5000)}(branch)$\n这个查询等价于以下查询：\n$$ \\sigma_{(branch_city \\geq “Brooklyn” \\land assets \\geq 5000)}(branch) $$\n使用 branch_city 索引，我们可以通过从第一个 “Brooklyn” 元组开始，沿着指针链检索所有 branch_city 值大于或等于 “Brooklyn” 的元组。同时，对每个元组应用额外的条件 $assets \\geq 5000$。\n15.7 C16 query optimization 教材内容：chapter 16\n笔记 概述\n可以通过优化SQL表达式，以及针对不同算子使用不同的实现方式，使用不同的索引来减少开销\n三个步骤\n生成等价的表达式 注释，获取备选方案 评估并选取开销最小的方案 关系表达式转换\n等价规则\n联合选择可以分成多次选择 选择可以交换 投影只需保留最后一个 笛卡尔积+选择 等价于 theta-join theta-join可以交换 自然连接和theta-join的结合性 theta-join和选择 theta-join和投影 略 步骤\n1 2 3 4 5 6 7 8 过程 genAllEquivalent(E) EQ = {E} // 初始化等价表达式集合EQ，最初只包含表达式E 重复执行以下步骤: 将集合EQ中的每个表达式Ei与每个等价规则Rj进行匹配 如果Ei的任何子表达式ei与Rj的一侧匹配 创建一个新表达式E'，它与Ei相同，除了将ei转换为匹配Rj的另一侧 如果E'不在EQ中，则将E'添加到EQ中 直到无法再向EQ中添加新表达式为止 Estimating Statistics of Expression Results（成本估算统计）\n直方图：统计某个属性的频率，如当某个属性值相同的个数较多，优化器可以使用全表扫描效率而不是索引\n【认知篇】Oracle的直方图是个嘛，能干啥？_oracle智能地生成直方图有什么用-CSDN博客 Oracle直方图的详细解析 - 孙愚 - 博客园 (cnblogs.com) 选择 连接 其他操作的估计\nChoice of Evaluation Plans\n基于成本（上一节以及15章） 启发式\n尽早执行选择操作 尽早执行投影操作 left-deep join 嵌套子查询 ",
+  "wordCount" : "3032",
+  "inLanguage": "en",
+  "datePublished": "2024-08-04T14:41:00+08:00",
+  "dateModified": "2024-08-04T14:41:00+08:00",
+  "author":{
+    "@type": "Person",
+    "name": "lbjfans"
+  },
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "http://localhost:1313/blog/en/posts/lab/database_system_concepts/part6-query-processing-and-optimization/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "lbjfans",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "http://localhost:1313/blog/img/logo.jpg"
+    }
+  }
+}
+</script>
+</head>
+
+<body class="" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="http://localhost:1313/blog/en/" accesskey="h" title="lbjfans (Alt + H)">lbjfans</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="http://localhost:1313/blog/en/search" title="🔍搜索 (Alt &#43; /)" accesskey=/>
+                    <span>🔍搜索</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://lbjfans.github.io/blog/" title="🏠主页">
+                    <span>🏠主页</span>&nbsp;
+                    <svg fill="none" shape-rendering="geometricPrecision" stroke="currentColor" stroke-linecap="round"
+                        stroke-linejoin="round" stroke-width="2.5" viewBox="0 0 24 24" height="12" width="12">
+                        <path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"></path>
+                        <path d="M15 3h6v6"></path>
+                        <path d="M10 14L21 3"></path>
+                    </svg>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/blog/en/posts/" title="📚文章">
+                    <span>📚文章</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/blog/en/archives/" title="⏱时间轴">
+                    <span>⏱时间轴</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/blog/en/tags" title="🔖标签">
+                    <span>🔖标签</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/blog/en/about" title="🙋🏻‍♂️关于">
+                    <span>🙋🏻‍♂️关于</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    <div class="breadcrumbs"><a href="http://localhost:1313/blog/en/">Home</a>&nbsp;»&nbsp;<a href="http://localhost:1313/blog/en/posts/">文章</a>&nbsp;»&nbsp;<a href="http://localhost:1313/blog/en/posts/lab/">项目相关</a>&nbsp;»&nbsp;<a href="http://localhost:1313/blog/en/posts/lab/database_system_concepts/">the translation and notes for database system concepts 7th</a></div>
+    <h1 class="post-title entry-hint-parent">
+      database system concepts --  query
+      <span class="entry-hint" title="Draft">
+        <svg xmlns="http://www.w3.org/2000/svg" height="35" viewBox="0 -960 960 960" fill="currentColor">
+          <path
+            d="M160-410v-60h300v60H160Zm0-165v-60h470v60H160Zm0-165v-60h470v60H160Zm360 580v-123l221-220q9-9 20-13t22-4q12 0 23 4.5t20 13.5l37 37q9 9 13 20t4 22q0 11-4.5 22.5T862.09-380L643-160H520Zm300-263-37-37 37 37ZM580-220h38l121-122-18-19-19-18-122 121v38Zm141-141-19-18 37 37-18-19Z" />
+        </svg>
+      </span>
+
+    </h1>
+    <div class="post-meta"><span title='2024-08-04 14:41:00 +0800 CST'>2024-08-04</span>&nbsp;·&nbsp;7 min&nbsp;·&nbsp;lbjfans
+
+</div>
+  </header> <aside id="toc-container" class="toc-container wide">
+    <div class="toc">
+        <details  open>
+            <summary accesskey="c" title="(Alt + C)">
+                <span class="details">Table of Contents</span>
+            </summary>
+
+            <div class="inner"><ul>
+                    <li>
+                        <a href="#c15-query-processing" aria-label="C15 query processing">C15 query processing</a><ul>
+                            
+                    <li>
+                        <a href="#%e7%ac%94%e8%ae%b0" aria-label="笔记">笔记</a></li>
+                    <li>
+                        <a href="#151" aria-label="15.1">15.1</a></li>
+                    <li>
+                        <a href="#%e5%81%87%e8%ae%be%e4%b8%ba%e4%ba%86%e7%ae%80%e5%8c%96%e8%bf%99%e4%b8%aa%e7%bb%83%e4%b9%a0%e6%af%8f%e4%b8%aa%e5%9d%97%e5%8f%aa%e8%83%bd%e5%ae%b9%e7%ba%b3%e4%b8%80%e4%b8%aa%e5%85%83%e7%bb%84%e5%b9%b6%e4%b8%94%e5%86%85%e5%ad%98%e6%9c%80%e5%a4%9a%e5%8f%aa%e8%83%bd%e5%ae%b9%e7%ba%b3%e4%b8%89%e4%b8%aa%e5%9d%97%e8%af%b7%e5%b1%95%e7%a4%ba%e5%9c%a8%e6%af%8f%e6%ac%a1%e6%8e%92%e5%ba%8f%e5%90%88%e5%b9%b6%e7%ae%97%e6%b3%95%e7%9a%84%e8%bf%87%e7%a8%8b%e4%b8%ad%e5%88%9b%e5%bb%ba%e7%9a%84%e8%bf%90%e8%a1%8cruns%e5%bd%93%e5%af%b9%e4%bb%a5%e4%b8%8b%e5%85%83%e7%bb%84%e8%bf%9b%e8%a1%8c%e6%8e%92%e5%ba%8f%e6%97%b6%e6%8c%89%e7%ac%ac%e4%b8%80%e4%b8%aa%e5%b1%9e%e6%80%a7%e6%8e%92%e5%ba%8fkangaroo-17-wallaby-21-emu-1-wombat-13-platypus-3-lion-8-warthog-4-zebra-11-meerkat-6-hyena-9-hornbill-2-baboon-12" aria-label="假设（为了简化这个练习）每个块只能容纳一个元组，并且内存最多只能容纳三个块。请展示在每次排序合并算法的过程中创建的运行（runs），当对以下元组进行排序时，按第一个属性排序：(kangaroo, 17), (wallaby, 21), (emu, 1), (wombat, 13), (platypus, 3), (lion, 8), (warthog, 4), (zebra, 11), (meerkat, 6), (hyena, 9), (hornbill, 2), (baboon, 12).">假设（为了简化这个练习）每个块只能容纳一个元组，并且内存最多只能容纳三个块。请展示在每次排序合并算法的过程中创建的运行（runs），当对以下元组进行排序时，按第一个属性排序：(kangaroo, 17), (wallaby, 21), (emu, 1), (wombat, 13), (platypus, 3), (lion, 8), (warthog, 4), (zebra, 11), (meerkat, 6), (hyena, 9), (hornbill, 2), (baboon, 12).</a></li>
+                    <li>
+                        <a href="#152" aria-label="15.2">15.2</a></li>
+                    <li>
+                        <a href="#153" aria-label="15.3">15.3</a></li>
+                    <li>
+                        <a href="#154" aria-label="15.4">15.4</a></li>
+                    <li>
+                        <a href="#155" aria-label="15.5">15.5</a></li>
+                    <li>
+                        <a href="#156" aria-label="15.6">15.6</a></li>
+                    <li>
+                        <a href="#157" aria-label="15.7">15.7</a></li></ul>
+                    </li>
+                    <li>
+                        <a href="#c16-query-optimization" aria-label="C16 query optimization">C16 query optimization</a><ul>
+                            
+                    <li>
+                        <a href="#%e7%ac%94%e8%ae%b0-1" aria-label="笔记">笔记</a>
+                    </li>
+                </ul>
+                </li>
+                </ul>
+            </div>
+        </details>
+    </div>
+</aside>
+<script>
+    let activeElement;
+    let elements;
+    window.addEventListener('DOMContentLoaded', function (event) {
+        checkTocPosition();
+
+        elements = document.querySelectorAll('h1[id],h2[id],h3[id],h4[id],h5[id],h6[id]');
+         
+         activeElement = elements[0];
+         const id = encodeURI(activeElement.getAttribute('id')).toLowerCase();
+         document.querySelector(`.inner ul li a[href="#${id}"]`).classList.add('active');
+     }, false);
+
+    window.addEventListener('resize', function(event) {
+        checkTocPosition();
+    }, false);
+
+    window.addEventListener('scroll', () => {
+        
+        activeElement = Array.from(elements).find((element) => {
+            if ((getOffsetTop(element) - window.pageYOffset) > 0 && 
+                (getOffsetTop(element) - window.pageYOffset) < window.innerHeight/2) {
+                return element;
+            }
+        }) || activeElement
+
+        elements.forEach(element => {
+             const id = encodeURI(element.getAttribute('id')).toLowerCase();
+             if (element === activeElement){
+                 document.querySelector(`.inner ul li a[href="#${id}"]`).classList.add('active');
+             } else {
+                 document.querySelector(`.inner ul li a[href="#${id}"]`).classList.remove('active');
+             }
+         })
+     }, false);
+
+    const main = parseInt(getComputedStyle(document.body).getPropertyValue('--article-width'), 10);
+    const toc = parseInt(getComputedStyle(document.body).getPropertyValue('--toc-width'), 10);
+    const gap = parseInt(getComputedStyle(document.body).getPropertyValue('--gap'), 10);
+
+    function checkTocPosition() {
+        const width = document.body.scrollWidth;
+
+        if (width - main - (toc * 2) - (gap * 4) > 0) {
+            document.getElementById("toc-container").classList.add("wide");
+        } else {
+            document.getElementById("toc-container").classList.remove("wide");
+        }
+    }
+
+    function getOffsetTop(element) {
+        if (!element.getClientRects().length) {
+            return 0;
+        }
+        let rect = element.getBoundingClientRect();
+        let win = element.ownerDocument.defaultView;
+        return rect.top + win.pageYOffset;   
+    }
+</script>
+
+  <div class="post-content"><h1 id="c15-query-processing">C15 query processing<a hidden class="anchor" aria-hidden="true" href="#c15-query-processing">#</a></h1>
+<blockquote>
+<p>教材内容：charpter 15, 22</p>
+</blockquote>
+<p><img loading="lazy" src="/blog/images/Pasted%20image%2020240804142753.png" alt=""  />
+
+<img loading="lazy" src="/blog/images/Pasted%20image%2020240804142821.png" alt=""  />
+</p>
+<h2 id="笔记">笔记<a hidden class="anchor" aria-hidden="true" href="#笔记">#</a></h2>
+<blockquote>
+<p>概述</p>
+</blockquote>
+<p>用户输入SQL语句，翻译为关系代数/语法树，经过优化器生成最终的语法树，最后执行输出
+<img loading="lazy" src="/blog/images/Pasted%20image%2020240806141322.png" alt=""  />
+</p>
+<p>在本章中，我们研究如何评估查询计划中的单个操作以及如何估算其成本；我们将在第 16 章回到查询优化的问题。第 15.2 节概述了如何测量查询的成本。第 15.3 节到第 15.6 节讨论了单个关系代数操作的评估。多个操作可以组合成一个流水线，在流水线中，每个操作在处理输入元组时，输入元组可能正由其他操作生成。在第 15.7 节，我们探讨了如何协调查询评估计划中多个操作的执行，特别是如何使用流水线操作来避免将中间结果写入磁盘。</p>
+<blockquote>
+<p>测量查询的成本</p>
+</blockquote>
+<p>开销（执行计划 + 单个算子的开销）</p>
+<ul>
+<li>磁盘IO</li>
+<li>CPU</li>
+<li>分布式通信</li>
+</ul>
+<p>为什么不最小化响应时间？</p>
+<ul>
+<li>SQL &gt; buffer &gt; disk，因为buffer内容随机，所以buffer占比更多的查询会更快</li>
+<li>对于并行IO，如RAID；T1需要访问更多的磁盘块但是可以并行读取，而T2访问很少的磁盘块但是只能串行读取</li>
+<li>所以响应时间并不可靠，可以最小化资源开销</li>
+</ul>
+<blockquote>
+<p>select</p>
+</blockquote>
+<p>假设$t_s$为磁盘的寻道以及旋转时间，而$t_T$为传输时间，$b_r$是一个文件中块的个数
+<img loading="lazy" src="/blog/images/Pasted%20image%2020240806161438.png" alt="450*450"  />
+</p>
+<ul>
+<li>A1：第一种情况是全表线性扫描；第二种情况是只输出对应的key，所以遍历到合适的就终止，平均即$b_r/2$</li>
+<li>A2：b+树，先查询索引，再查询一条记录（b+树每个节点放在一个块中）</li>
+<li>A3：b+树，先查询索引，再查询该记录的非关键字属性（b是该记录占的块数，假设块连续存放）</li>
+<li>A4：第一种，同A2，使用二级索引；第二种，先找索引，再找n次记录（因为二级索引不连续）</li>
+<li>A5：范围查找，同A3</li>
+<li>A6：二级索引的范围查找，同A4</li>
+</ul>
+<blockquote>
+<p>sorting</p>
+</blockquote>
+<p>排序的原因</p>
+<ul>
+<li>输出需要排序</li>
+<li>如join使用排序的数据会更快</li>
+</ul>
+<p>外部归并排序</p>
+<blockquote>
+<p>join</p>
+</blockquote>
+<p>针对等值连接，可以分类为</p>
+<ul>
+<li>nested-join
+<ul>
+<li>naive：每个R元组都遍历一次S</li>
+<li>block：R每个块对应一次S</li>
+<li>index：对于R每个元组用索引去S里找</li>
+</ul>
+</li>
+<li>sort：排序 + 合并</li>
+<li>hash：RS同时哈希</li>
+</ul>
+<blockquote>
+<p>other</p>
+</blockquote>
+<p>duplicate elimination：排序，哈希
+projection
+set operations：集合操作，哈希
+outer join
+aggregation</p>
+<blockquote>
+<p>完整表达式的计算</p>
+</blockquote>
+<p>两种</p>
+<ul>
+<li>Materialization：每个算子存储中间结果，最后输出</li>
+<li>pipeline：不存储中间结果，每个算子的结果直接传给下一个</li>
+</ul>
+<h2 id="151">15.1<a hidden class="anchor" aria-hidden="true" href="#151">#</a></h2>
+<blockquote>
+<h2 id="假设为了简化这个练习每个块只能容纳一个元组并且内存最多只能容纳三个块请展示在每次排序合并算法的过程中创建的运行runs当对以下元组进行排序时按第一个属性排序kangaroo-17-wallaby-21-emu-1-wombat-13-platypus-3-lion-8-warthog-4-zebra-11-meerkat-6-hyena-9-hornbill-2-baboon-12">假设（为了简化这个练习）每个块只能容纳一个元组，并且内存最多只能容纳三个块。请展示在每次排序合并算法的过程中创建的运行（runs），当对以下元组进行排序时，按第一个属性排序：(kangaroo, 17), (wallaby, 21), (emu, 1), (wombat, 13), (platypus, 3), (lion, 8), (warthog, 4), (zebra, 11), (meerkat, 6), (hyena, 9), (hornbill, 2), (baboon, 12).<a hidden class="anchor" aria-hidden="true" href="#假设为了简化这个练习每个块只能容纳一个元组并且内存最多只能容纳三个块请展示在每次排序合并算法的过程中创建的运行runs当对以下元组进行排序时按第一个属性排序kangaroo-17-wallaby-21-emu-1-wombat-13-platypus-3-lion-8-warthog-4-zebra-11-meerkat-6-hyena-9-hornbill-2-baboon-12">#</a></h2>
+</blockquote>
+<p><img loading="lazy" src="/blog/images/Pasted%20image%2020240808135521.png" alt=""  />
+</p>
+<ul>
+<li>这里我感觉有问题，因为内存最多3个block，所以因该是用2-路归并（有一个块作为输出块）</li>
+</ul>
+<h2 id="152">15.2<a hidden class="anchor" aria-hidden="true" href="#152">#</a></h2>
+<blockquote>
+<p>考虑图15.14中的银行数据库，其中主键已下划线标出，并给出如下SQL查询：</p>
+</blockquote>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="k">SELECT</span><span class="w"> </span><span class="n">T</span><span class="p">.</span><span class="n">branch_name</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="k">FROM</span><span class="w"> </span><span class="n">branch</span><span class="w"> </span><span class="n">T</span><span class="p">,</span><span class="w"> </span><span class="n">branch</span><span class="w"> </span><span class="n">S</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="k">WHERE</span><span class="w"> </span><span class="n">T</span><span class="p">.</span><span class="n">assets</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">S</span><span class="p">.</span><span class="n">assets</span><span class="w"> </span><span class="k">AND</span><span class="w"> </span><span class="n">S</span><span class="p">.</span><span class="n">branch_city</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&#34;Brooklyn&#34;</span><span class="w">
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div><blockquote>
+<p>编写一个与此查询等效的高效关系代数表达式，并说明选择的理由。</p>
+</blockquote>
+<ul>
+<li><img loading="lazy" src="/blog/images/Pasted%20image%2020240808135845.png" alt=""  />
+</li>
+</ul>
+<hr>
+<p><img loading="lazy" src="/blog/images/Pasted%20image%2020240808140054.png" alt=""  />
+
+这个表达式在可能的最小数据量上执行了θ连接。它通过将连接的右侧操作数限制为仅包含布鲁克林的分支，并且还从两个操作数中删除不必要的属性来实现这一点。</p>
+<h2 id="153">15.3<a hidden class="anchor" aria-hidden="true" href="#153">#</a></h2>
+<blockquote>
+<p>假设关系 ( r1(A, B, C) ) 和 ( r2(C, D, E) ) 具有以下属性：( r1 ) 有 20,000 个元组，( r2 ) 有 45,000 个元组，( r1 ) 的 25 个元组可以放在一个块中，( r2 ) 的 30 个元组可以放在一个块中。使用以下每种连接策略连接 ( r1 ) 和 ( r2 ) 时，估算所需的块传输和查找次数：
+a. 嵌套循环连接（Nested-loop join）。<br>
+b. 块嵌套循环连接（Block nested-loop join）。<br>
+c. 归并连接（Merge join）。<br>
+d. 哈希连接（Hash join）。</p>
+</blockquote>
+<hr>
+<p>关系 <code>r1</code> 需要 800 个块，关系 <code>r2</code> 需要 1500 个块。假设内存中有 <code>M</code> 页。如果 <code>M &gt; 800</code>，即使使用简单的嵌套循环连接，也可以轻松完成连接操作，仅需 <code>1500 + 800</code> 次磁盘访问。因此，我们只考虑 <code>M &lt;= 800</code> 页的情况。</p>
+<p>a.
+使用 r1 作为外部关系时，需要 20,000 × 1,500 + 800 = 30,000,800 次磁盘访问。
+如果 r2 是外部关系，则需要 45,000 × 800 + 1,500 = 36,001,500 次磁盘访问。</p>
+<ul>
+<li>r1需要20000/25 = 800块，r2需要45000 / 30 = 1500块，正常会把小表放外层循环（即r1）</li>
+</ul>
+<p>b.
+如果 r1 是外部关系，则需要 $\lceil \frac{800}{M - 1} \rceil \times 1500 + 800$ 次磁盘访问。如果 r2 是外部关系，则需要 $\lceil \frac{1500}{M - 1} \rceil \times 800 + 1500$ 次磁盘访问。</p>
+<p>c.
+假设 $r_1$ 和 $r_2$ 在连接键上没有初始排序，并且 $b_b = 1$，总的排序成本（包括输出）为：</p>
+<p>$$
+B_s = 1500 \left(2 \lceil \log_{M - 1} \left(\frac{1500}{M}\right) \rceil + 2\right) + 800 \left(2 \lceil \log_{M - 1} \left(\frac{800}{M}\right) \rceil + 2\right)
+$$</p>
+<p>磁盘访问次数。假设具有相同连接属性值的所有元组都可以放入内存中，总成本为 $B_s + 1500 + 800$ 磁盘访问次数。</p>
+<p>d.
+我们假设不会发生溢出。由于 $r_1$ 较小，我们将其作为构建关系（build relation），而将 $r_2$ 作为探测关系（probe relation）。如果 $M &gt; 800$，即不需要递归划分，则成本为 $3 \times (1500 + 800) = 6900$ 磁盘访问次数；否则，成本为</p>
+<p>$$
+2 \times (1500 + 800) \lceil \log_{M-1}(800) - 1 \rceil + 1500 + 800
+$$</p>
+<p>磁盘访问次数。</p>
+<h2 id="154">15.4<a hidden class="anchor" aria-hidden="true" href="#154">#</a></h2>
+<blockquote>
+<p>如果索引是二级索引且在连接属性上有多个具有相同值的元组，则第15.5.3节中描述的索引嵌套循环连接算法可能效率低下。这是为什么呢？请描述一种利用排序来减少检索内部关系元组成本的方法。在什么情况下，这种算法会比混合归并连接算法更高效？</p>
+</blockquote>
+<hr>
+<ul>
+<li>不懂</li>
+</ul>
+<h2 id="155">15.5<a hidden class="anchor" aria-hidden="true" href="#155">#</a></h2>
+<blockquote>
+<p>设$r$和$s$为没有索引的关系，且假设这些关系未排序。假设内存无限，计算$r \bowtie s$的最低成本（以I/O操作为单位）是什么？这种算法需要多少内存？</p>
+</blockquote>
+<hr>
+<p>我们可以将较小的关系完全存储在内存中，逐块读取较大的关系，并使用较大的关系作为外层关系来执行嵌套循环连接。I/O操作的数量等于 $b_r + b_s$，内存需求为 $\min(b_r, b_s) + 2$ 页。</p>
+<h2 id="156">15.6<a hidden class="anchor" aria-hidden="true" href="#156">#</a></h2>
+<blockquote>
+<p>考虑数据库图 15.14，其中主键下划线。假设关系 <code>branch</code> 上有一个关于 <code>branch_city</code> 的 $B^+$-树索引，且没有其他索引。列出处理涉及否定的选择操作的不同方法：</p>
+</blockquote>
+<ul>
+<li><img loading="lazy" src="/blog/images/Pasted%20image%2020240808145415.png" alt=""  />
+</li>
+</ul>
+<hr>
+<p>a. $\sigma_{\neg (branch_city &lt; &ldquo;Brooklyn&rdquo;)}(branch)$</p>
+<p>使用索引定位 <code>branch_city</code> 字段值为 &ldquo;Brooklyn&rdquo; 的第一个元组。从这个元组开始，沿着指针链访问所有后续的元组，直到检索到所有相关的元组。</p>
+<p>b. $\sigma_{\neg (branch_city = &ldquo;Brooklyn&rdquo;)}(branch)$</p>
+<p>对于这个查询，索引没有作用。我们可以顺序扫描文件，并选择所有 <code>branch_city</code> 字段不是 &ldquo;Brooklyn&rdquo; 的元组。</p>
+<p>c. $\sigma_{\neg (branch_city &lt; &ldquo;Brooklyn&rdquo; \lor assets &lt; 5000)}(branch)$</p>
+<p>这个查询等价于以下查询：</p>
+<p>$$
+\sigma_{(branch_city \geq &ldquo;Brooklyn&rdquo; \land assets \geq 5000)}(branch)
+$$</p>
+<p>使用 <code>branch_city</code> 索引，我们可以通过从第一个 &ldquo;Brooklyn&rdquo; 元组开始，沿着指针链检索所有 <code>branch_city</code> 值大于或等于 &ldquo;Brooklyn&rdquo; 的元组。同时，对每个元组应用额外的条件 $assets \geq 5000$。</p>
+<h2 id="157">15.7<a hidden class="anchor" aria-hidden="true" href="#157">#</a></h2>
+<blockquote>
+</blockquote>
+<h1 id="c16-query-optimization">C16 query optimization<a hidden class="anchor" aria-hidden="true" href="#c16-query-optimization">#</a></h1>
+<blockquote>
+<p>教材内容：chapter 16</p>
+</blockquote>
+<h2 id="笔记-1">笔记<a hidden class="anchor" aria-hidden="true" href="#笔记-1">#</a></h2>
+<blockquote>
+<p>概述</p>
+</blockquote>
+<p>可以通过优化SQL表达式，以及针对不同算子使用不同的实现方式，使用不同的索引来减少开销</p>
+<p>三个步骤</p>
+<ul>
+<li>生成等价的表达式</li>
+<li>注释，获取备选方案</li>
+<li>评估并选取开销最小的方案</li>
+</ul>
+<blockquote>
+<p>关系表达式转换</p>
+</blockquote>
+<p>等价规则</p>
+<ul>
+<li>联合选择可以分成多次选择</li>
+<li>选择可以交换
+<img loading="lazy" src="/blog/images/Pasted%20image%2020240807134312.png" alt=""  />
+</li>
+<li>投影只需保留最后一个
+<img loading="lazy" src="/blog/images/Pasted%20image%2020240807134412.png" alt=""  />
+</li>
+<li>笛卡尔积+选择 等价于 theta-join</li>
+<li>theta-join可以交换
+<img loading="lazy" src="/blog/images/Pasted%20image%2020240807140100.png" alt=""  />
+</li>
+<li>自然连接和theta-join的结合性
+<img loading="lazy" src="/blog/images/Pasted%20image%2020240807144458.png" alt=""  />
+</li>
+<li>theta-join和选择
+<img loading="lazy" src="/blog/images/Pasted%20image%2020240807144550.png" alt=""  />
+</li>
+<li>theta-join和投影
+<img loading="lazy" src="/blog/images/Pasted%20image%2020240807144618.png" alt=""  />
+</li>
+<li>略</li>
+</ul>
+<p>步骤</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">过程 genAllEquivalent(E)
+</span></span><span class="line"><span class="cl">  EQ = {E}  // 初始化等价表达式集合EQ，最初只包含表达式E
+</span></span><span class="line"><span class="cl">  重复执行以下步骤:
+</span></span><span class="line"><span class="cl">    将集合EQ中的每个表达式Ei与每个等价规则Rj进行匹配
+</span></span><span class="line"><span class="cl">    如果Ei的任何子表达式ei与Rj的一侧匹配
+</span></span><span class="line"><span class="cl">      创建一个新表达式E&#39;，它与Ei相同，除了将ei转换为匹配Rj的另一侧
+</span></span><span class="line"><span class="cl">      如果E&#39;不在EQ中，则将E&#39;添加到EQ中
+</span></span><span class="line"><span class="cl">  直到无法再向EQ中添加新表达式为止
+</span></span></code></pre></td></tr></table>
+</div>
+</div><blockquote>
+<p>Estimating Statistics of Expression Results（成本估算统计）</p>
+</blockquote>
+<p>直方图：统计某个属性的频率，如当某个属性值相同的个数较多，优化器可以使用全表扫描效率而不是索引</p>
+<ul>
+<li><a href="https://blog.csdn.net/db_murphy/article/details/103988333">【认知篇】Oracle的直方图是个嘛，能干啥？_oracle智能地生成直方图有什么用-CSDN博客</a></li>
+<li><a href="https://www.cnblogs.com/51linux/p/4128498.html">Oracle直方图的详细解析 - 孙愚 - 博客园 (cnblogs.com)</a></li>
+</ul>
+<p>选择
+连接
+其他操作的估计</p>
+<blockquote>
+<p>Choice of Evaluation Plans</p>
+</blockquote>
+<p>基于成本（上一节以及15章）
+启发式</p>
+<ul>
+<li>尽早执行选择操作</li>
+<li>尽早执行投影操作</li>
+<li>left-deep join
+<img loading="lazy" src="/blog/images/Pasted%20image%2020240807153106.png" alt=""  />
+</li>
+<li>嵌套子查询</li>
+</ul>
+
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+      <li><a href="http://localhost:1313/blog/en/tags/lab/">Lab</a></li>
+      <li><a href="http://localhost:1313/blog/en/tags/database/">Database</a></li>
+      <li><a href="http://localhost:1313/blog/en/tags/%23database_system_concepts/">#Database_system_concepts</a></li>
+      <li><a href="http://localhost:1313/blog/en/tags/database_system_concepts/">Database_system_concepts</a></li>
+    </ul>
+<nav class="paginav">
+  <a class="prev" href="http://localhost:1313/blog/en/posts/lab/database_system_concepts/part7-transaction-management/">
+    <span class="title">« Prev</span>
+    <br>
+    <span>database system concepts --  transaction</span>
+  </a>
+  <a class="next" href="http://localhost:1313/blog/en/posts/lab/bustub/lab0/">
+    <span class="title">Next »</span>
+    <br>
+    <span>cmu15445--lab0</span>
+  </a>
+</nav>
+
+
+  </footer>
+<div>    
+    <div class="pagination__title">
+        <span class="pagination__title-h" style="font-size: 20px;">评论</span>
+        <br/>
+    </div>
+    <div id="tcomment"></div>
+	<script src="https://utteranc.es/client.js"
+        	repo="lbjfans/blog_comment"
+        	issue-term="url"
+        	theme="github-light"
+        	crossorigin="anonymous"
+        	async>
+	</script>
+</div>
+
+
+  
+  
+
+</article>
+    </main>
+    
+<footer class="footer">
+        <span>&copy; 2024 <a href="http://localhost:1313/blog/en/">lbjfans</a></span> · 
+
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerHTML = 'copy';
+
+        function copyingDone() {
+            copybutton.innerHTML = 'copied!';
+            setTimeout(() => {
+                copybutton.innerHTML = 'copy';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                navigator.clipboard.writeText(codeblock.textContent);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) { };
+            selection.removeRange(range);
+        });
+
+        if (container.classList.contains("highlight")) {
+            container.appendChild(copybutton);
+        } else if (container.parentNode.firstChild == container) {
+            
+        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
+            
+            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+        } else {
+            
+            codeblock.parentNode.appendChild(copybutton);
+        }
+    });
+</script>
+</body>
+
+</html>
